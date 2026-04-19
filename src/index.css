@@ -101,3 +101,8 @@
   }
   .text-balance { text-wrap: balance; }
 }
+
+/* Global zero radius on card-like elements (keeps rounded-full for pills/avatars) */
+.rounded-sm, .rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl, .rounded-3xl {
+  border-radius: 0 !important;
+}
