@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/integrations/supabase/client";
 import { tours } from "@/data/tours";
+import { generateQuotePdf } from "@/lib/quotePdf";
 
 const HERO = "https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=2000&q=80";
 
@@ -61,7 +62,13 @@ const Contact = () => {
       toast.error("Something went wrong. Please try again.");
       return;
     }
-    toast.success("Thank you! We'll be in touch within 24 hours.");
+    // Generate and download a branded PDF summary for the client
+    try {
+      generateQuotePdf(payload);
+    } catch (err) {
+      console.error("PDF generation failed", err);
+    }
+    toast.success("Thank you! Your quote summary PDF is downloading. We'll be in touch within 24 hours.");
     setForm(initial);
   };
 
