@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/PageHero";
+import { Seo } from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
 import { tours } from "@/data/tours";
 import { generateQuotePdf } from "@/lib/quotePdf";
 
-const HERO = "https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/elephant-crossing.jpg";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
