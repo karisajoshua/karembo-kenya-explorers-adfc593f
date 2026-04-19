@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Seo } from "@/components/Seo";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 
-type Post = { id: string; slug: string; title: string; content: string; cover_image: string | null; created_at: string; author: string | null };
+type Post = { id: string; slug: string; title: string; content: string; cover_image: string | null; created_at: string; author: string | null; excerpt?: string | null };
 
 const renderContent = (md: string) =>
   md.split("\n").map((line, i) => {
