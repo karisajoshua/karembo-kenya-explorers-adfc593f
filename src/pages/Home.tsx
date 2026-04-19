@@ -11,8 +11,14 @@ import { byCategory } from "@/data/tours";
 import { cn } from "@/lib/utils";
 
 import HERO from "@/assets/uploads/wildebeest-crossing.jpg";
+import HERO_2 from "@/assets/uploads/elephant-tusks.jpg";
+import HERO_3 from "@/assets/uploads/lion-male.jpg";
+import HERO_4 from "@/assets/uploads/elephant-crossing.jpg";
+import HERO_5 from "@/assets/uploads/safari-binoculars.jpg";
 import CULTURAL_IMG from "@/assets/uploads/safari-binoculars.jpg";
 import BANNER_IMG from "@/assets/uploads/elephant-crossing.jpg";
+
+const HERO_IMAGES = [HERO, HERO_2, HERO_3, HERO_4, HERO_5];
 
 const pillars = [
   {
