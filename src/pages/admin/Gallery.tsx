@@ -64,10 +64,12 @@ const Gallery = () => {
         continue;
       }
       const { data: pub } = supabase.storage.from("site-assets").getPublicUrl(path);
-      const caption = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ");
+      let caption = file.name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+      // Strip WhatsApp-style filenames so they don't show as captions
+      if (/whatsapp/i.test(caption) || /^image\s*\d/i.test(caption)) caption = "";
       const { error: insErr } = await supabase.from("gallery_images").insert({
         image_url: pub.publicUrl,
-        caption,
+        caption: caption || null,
         category: bulkCategory,
         sort_order: ++baseOrder,
       });
