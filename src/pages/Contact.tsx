@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/PageHero";
+import { Seo } from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
 import { tours } from "@/data/tours";
 import { generateQuotePdf } from "@/lib/quotePdf";
 
-const HERO = "https://images.unsplash.com/photo-1549366021-9f761d040a94?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/elephant-crossing.jpg";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
@@ -74,6 +75,30 @@ const Contact = () => {
 
   return (
     <>
+      <Seo
+        title="Contact Karembo Tours — Free Kenya Safari Quote"
+        description="Request a free, tailor-made Kenya safari quote. Karembo Tours' Nairobi-based team replies within 24 hours. WhatsApp, email or phone."
+        path="/contact"
+        image="/gallery/elephant-crossing.jpg"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "@id": "https://karembotours.co.ke/#business",
+          name: "Karembo Tours and Safaris",
+          image: "https://karembotours.co.ke/gallery/wildebeest-crossing.jpg",
+          telephone: "+254722736130",
+          email: "info@karembotours.co.ke",
+          url: "https://karembotours.co.ke",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "11th Street Kangawa, Ngong Road",
+            addressLocality: "Nairobi",
+            addressCountry: "KE",
+          },
+          areaServed: "Kenya",
+          priceRange: "$$",
+        }}
+      />
       <PageHero
         image={HERO}
         eyebrow="Let's plan it"

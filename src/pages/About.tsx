@@ -3,6 +3,7 @@ import { Award, Users, Leaf, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
+import { Seo, orgJsonLd } from "@/components/Seo";
 
 import HERO from "@/assets/uploads/lioness-resting.jpg";
 import STORY_IMG from "@/assets/uploads/lion-male.jpg";
@@ -16,6 +17,13 @@ const values = [
 
 const About = () => (
   <>
+    <Seo
+      title="About Karembo Tours and Safaris — Kenyan Safari Specialists"
+      description="Karembo Tours is a trusted Nairobi-based Kenyan tour operator. Local guides, responsible travel and tailor-made safaris across the Masai Mara, Amboseli and beyond."
+      path="/about"
+      image="/gallery/lion-male.jpg"
+      jsonLd={[orgJsonLd, { "@context": "https://schema.org", "@type": "AboutPage", url: "https://karembotours.co.ke/about", name: "About Karembo Tours" }]}
+    />
     <PageHero
       image={HERO}
       eyebrow="Dream Your Next Trip"

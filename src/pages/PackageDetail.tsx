@@ -2,6 +2,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { Check, Clock, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
+import { Seo } from "@/components/Seo";
 import { findTour } from "@/data/tours";
 
 const PackageDetail = () => {
@@ -11,6 +12,34 @@ const PackageDetail = () => {
 
   return (
     <>
+      <Seo
+        title={`${tour.title} (${tour.duration}) | Karembo Tours`}
+        description={tour.shortDescription}
+        path={`/packages/${tour.slug}`}
+        image={tour.image}
+        type="article"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "TouristTrip",
+            name: tour.title,
+            description: tour.shortDescription,
+            image: tour.image.startsWith("http") ? tour.image : `https://karembotours.co.ke${tour.image}`,
+            touristType: ["Wildlife", "Adventure", "Cultural"],
+            provider: { "@type": "TravelAgency", name: "Karembo Tours and Safaris", url: "https://karembotours.co.ke" },
+            itinerary: tour.itinerary.map((d, i) => ({ "@type": "ItemList", position: i + 1, name: d.title, description: d.details })),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://karembotours.co.ke/" },
+              { "@type": "ListItem", position: 2, name: "Packages", item: "https://karembotours.co.ke/safaris" },
+              { "@type": "ListItem", position: 3, name: tour.title, item: `https://karembotours.co.ke/packages/${tour.slug}` },
+            ],
+          },
+        ]}
+      />
       <PageHero
         image={tour.image}
         eyebrow={tour.duration}

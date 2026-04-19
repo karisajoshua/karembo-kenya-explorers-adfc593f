@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Seo } from "@/components/Seo";
 import { format } from "date-fns";
 import { ArrowLeft } from "lucide-react";
 
-type Post = { id: string; slug: string; title: string; content: string; cover_image: string | null; created_at: string; author: string | null };
+type Post = { id: string; slug: string; title: string; content: string; cover_image: string | null; created_at: string; author: string | null; excerpt?: string | null };
+
+const renderInline = (text: string) =>
+  text
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-accent underline underline-offset-2 hover:text-accent/80">$1</a>');
 
 const renderContent = (md: string) =>
   md.split("\n").map((line, i) => {
-    if (line.startsWith("## ")) return <h2 key={i} className="font-serif text-2xl text-primary mt-8 mb-3">{line.slice(3)}</h2>;
-    if (line.trim().startsWith("- ")) return <li key={i} className="ml-5 list-disc text-foreground/90">{line.replace(/^\s*-\s*/, "")}</li>;
-    if (/^\d+\.\s/.test(line.trim())) return <li key={i} className="ml-5 list-decimal text-foreground/90">{line.replace(/^\s*\d+\.\s*/, "")}</li>;
+    const imgMatch = line.match(/^!\[(.*?)\]\((.+?)\)\s*$/);
+    if (imgMatch) {
+      return (
+        <figure key={i} className="my-8 -mx-4 md:mx-0">
+          <img src={imgMatch[2]} alt={imgMatch[1]} loading="lazy" decoding="async" className="w-full rounded-lg shadow-card" />
+          {imgMatch[1] && <figcaption className="text-center text-xs text-muted-foreground mt-2">{imgMatch[1]}</figcaption>}
+        </figure>
+      );
+    }
+    if (line.startsWith("## ")) return <h2 key={i} className="font-serif text-2xl text-primary mt-10 mb-4">{line.slice(3)}</h2>;
+    if (line.trim().startsWith("- ")) return <li key={i} className="ml-5 list-disc text-foreground/90" dangerouslySetInnerHTML={{ __html: renderInline(line.replace(/^\s*-\s*/, "")) }} />;
+    if (/^\d+\.\s/.test(line.trim())) return <li key={i} className="ml-5 list-decimal text-foreground/90" dangerouslySetInnerHTML={{ __html: renderInline(line.replace(/^\s*\d+\.\s*/, "")) }} />;
     if (!line.trim()) return <div key={i} className="h-3" />;
-    return <p key={i} className="text-foreground/90 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: line.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>") }} />;
+    return <p key={i} className="text-foreground/90 leading-relaxed mb-4" dangerouslySetInnerHTML={{ __html: renderInline(line) }} />;
   });
 
 const BlogPost = () => {
@@ -28,8 +43,31 @@ const BlogPost = () => {
   if (loading) return <div className="container-edge py-20 text-center text-muted-foreground">Loading…</div>;
   if (!post) return <div className="container-edge py-20 text-center"><h1 className="font-serif text-2xl text-primary">Post not found</h1></div>;
 
+  const desc = (post.excerpt || post.content.replace(/[#*`!\[\]()]/g, "").slice(0, 155)).trim();
+  const cover = post.cover_image || "/gallery/wildebeest-crossing.jpg";
+
   return (
     <article>
+      <Seo
+        title={`${post.title} | Karembo Tours Journal`}
+        description={desc}
+        path={`/blog/${post.slug}`}
+        image={cover}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          image: cover.startsWith("http") ? cover : `https://karembotours.co.ke${cover}`,
+          datePublished: post.created_at,
+          dateModified: post.created_at,
+          author: { "@type": "Organization", name: post.author || "Karembo Tours" },
+          publisher: { "@type": "Organization", name: "Karembo Tours and Safaris", logo: { "@type": "ImageObject", url: "https://karembotours.co.ke/gallery/lion-male.jpg" } },
+          mainEntityOfPage: `https://karembotours.co.ke/blog/${post.slug}`,
+          description: desc,
+          wordCount: post.content.split(/\s+/).length,
+        }}
+      />
       {post.cover_image && (
         <div className="aspect-[21/9] md:aspect-[3/1] overflow-hidden">
           <img src={post.cover_image} alt={post.title} className="h-full w-full object-cover" />

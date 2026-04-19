@@ -9,6 +9,7 @@ import { PackageCard } from "@/components/PackageCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { byCategory } from "@/data/tours";
 import { cn } from "@/lib/utils";
+import { Seo, orgJsonLd } from "@/components/Seo";
 
 import HERO from "@/assets/uploads/wildebeest-crossing.jpg";
 import HERO_2 from "@/assets/uploads/elephant-tusks.jpg";
@@ -51,6 +52,26 @@ const Home = () => {
 
   return (
     <>
+      <Seo
+        title="Karembo Tours and Safaris — Trusted Kenyan Safari Company"
+        description="Masai Mara safaris, Big Five tours, Nairobi day trips and authentic cultural experiences with a trusted Kenyan tour operator. Tailor-made itineraries from Nairobi."
+        path="/"
+        image="/gallery/wildebeest-crossing.jpg"
+        jsonLd={[
+          orgJsonLd,
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            url: "https://karembotours.co.ke",
+            name: "Karembo Tours and Safaris",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: "https://karembotours.co.ke/safaris?q={search_term_string}",
+              "query-input": "required name=search_term_string",
+            },
+          },
+        ]}
+      />
       <PageHero
         images={HERO_IMAGES}
         size="tall"

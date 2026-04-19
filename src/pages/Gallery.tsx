@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHero } from "@/components/PageHero";
+import { Seo } from "@/components/Seo";
 import { cn } from "@/lib/utils";
 
 type Img = { id: string; image_url: string; caption: string | null; category: string | null };
 
-const HERO = "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/wildebeest-herd-mara.jpg";
 
 const Gallery = () => {
   const [rows, setRows] = useState<Img[]>([]);
@@ -22,6 +23,12 @@ const Gallery = () => {
 
   return (
     <>
+      <Seo
+        title="Kenya Safari Photo Gallery | Karembo Tours"
+        description="Wildlife, landscapes and behind-the-scenes safari photography from Karembo Tours' trips across the Masai Mara, Amboseli and beyond."
+        path="/gallery"
+        image="/gallery/wildebeest-herd-mara.jpg"
+      />
       <PageHero image={HERO} eyebrow="Through the lens" title="Gallery" subtitle="A glimpse of Kenya through our cameras — wildlife, landscapes, and the people who make every safari unforgettable." />
       <section className="py-16">
         <div className="container-edge">

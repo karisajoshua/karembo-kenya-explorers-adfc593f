@@ -1,13 +1,20 @@
 import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
 import { byCategory } from "@/data/tours";
+import { Seo } from "@/components/Seo";
 
-const HERO = "https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/lioness-resting.jpg";
 
 const Cultural = () => {
   const tours = byCategory("cultural");
   return (
     <>
+      <Seo
+        title="Maasai & Samburu Cultural Tours in Kenya | Karembo Tours"
+        description="Authentic, community-led cultural experiences in Kenya — Maasai village immersion, Bomas of Kenya and Samburu cultural extensions."
+        path="/cultural"
+        image="/gallery/lioness-resting.jpg"
+      />
       <PageHero
         image={HERO}
         eyebrow="Heart of Kenya"
