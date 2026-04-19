@@ -11,6 +11,8 @@ const nav = [
   { to: "/day-trips", label: "Day Trips" },
   { to: "/combo", label: "Combo" },
   { to: "/cultural", label: "Cultural" },
+  { to: "/blog", label: "Blog" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];

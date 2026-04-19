@@ -67,20 +67,20 @@ export const MegaMenu = () => (
           </NavigationMenuContent>
         </NavigationMenuItem>
       ))}
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link to="/about" className={cn("inline-flex items-center px-3 py-2 text-sm font-medium text-foreground/80 hover:text-accent")}>
-            About
-          </Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
-      <NavigationMenuItem>
-        <NavigationMenuLink asChild>
-          <Link to="/contact" className={cn("inline-flex items-center px-3 py-2 text-sm font-medium text-foreground/80 hover:text-accent")}>
-            Contact
-          </Link>
-        </NavigationMenuLink>
-      </NavigationMenuItem>
+      {[
+        { to: "/blog", label: "Blog" },
+        { to: "/gallery", label: "Gallery" },
+        { to: "/about", label: "About" },
+        { to: "/contact", label: "Contact" },
+      ].map((l) => (
+        <NavigationMenuItem key={l.to}>
+          <NavigationMenuLink asChild>
+            <Link to={l.to} className={cn("inline-flex items-center px-3 py-2 text-sm font-medium text-foreground/80 hover:text-accent")}>
+              {l.label}
+            </Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      ))}
     </NavigationMenuList>
   </NavigationMenu>
 );
