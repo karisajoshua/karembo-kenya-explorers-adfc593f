@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHero } from "@/components/PageHero";
+import { Seo } from "@/components/Seo";
 import { cn } from "@/lib/utils";
 
 type Img = { id: string; image_url: string; caption: string | null; category: string | null };
 
-const HERO = "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/wildebeest-herd-mara.jpg";
 
 const Gallery = () => {
   const [rows, setRows] = useState<Img[]>([]);

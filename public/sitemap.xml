@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">
+  <url><loc>https://karembotours.co.ke/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://karembotours.co.ke/safaris</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://karembotours.co.ke/day-trips</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://karembotours.co.ke/combo</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://karembotours.co.ke/cultural</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/gallery</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://karembotours.co.ke/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+
+  <url><loc>https://karembotours.co.ke/packages/3-day-masai-mara-classic</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/5-day-great-migration</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/7-day-mara-amboseli</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/4-day-luxury-mara</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/6-day-mara-nakuru</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/8-day-honeymoon-kenya</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/nairobi-national-park</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/giraffe-centre-elephant-orphanage</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/karen-blixen-museum</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/bomas-of-kenya</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/nairobi-city-tour</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/mt-longonot-hike</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/combo-nairobi-mara-5day</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/combo-nairobi-mara-amboseli-7day</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/combo-mara-diani-9day</loc><priority>0.8</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/maasai-village-immersion</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/bomas-cultural-deep-dive</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/packages/samburu-cultural-extension</loc><priority>0.7</priority></url>
+
+  <url><loc>https://karembotours.co.ke/blog/best-time-visit-masai-mara</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/big-five-guide</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/safari-packing-list</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/cultural-etiquette-kenya</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/honeymoon-safari-ideas</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/budget-safari-tips</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/top-nairobi-day-trips</loc><priority>0.7</priority></url>
+  <url><loc>https://karembotours.co.ke/blog/conservation-kenya</loc><priority>0.7</priority></url>
+</urlset>

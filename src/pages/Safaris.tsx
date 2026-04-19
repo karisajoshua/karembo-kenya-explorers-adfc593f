@@ -1,6 +1,7 @@
 import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
 import { byCategory } from "@/data/tours";
+import { Seo } from "@/components/Seo";
 
 import HERO from "@/assets/uploads/elephant-tusks.jpg";
 
@@ -8,6 +9,23 @@ const Safaris = () => {
   const tours = byCategory("safari");
   return (
     <>
+      <Seo
+        title="Masai Mara Safari Packages from Nairobi | Karembo Tours"
+        description="Multi-day Masai Mara safaris, Big Five tours and Great Migration trips with a trusted Kenyan tour operator. Tailor-made itineraries from 3 to 8 days."
+        path="/safaris"
+        image="/gallery/elephant-tusks.jpg"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Kenya Safari Packages",
+          itemListElement: tours.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://karembotours.co.ke/packages/${t.slug}`,
+            name: t.title,
+          })),
+        }}
+      />
       <PageHero
         image={HERO}
         eyebrow="Masai Mara"

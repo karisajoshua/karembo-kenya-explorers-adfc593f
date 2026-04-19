@@ -1,13 +1,20 @@
 import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
 import { byCategory } from "@/data/tours";
+import { Seo } from "@/components/Seo";
 
-const HERO = "https://images.unsplash.com/photo-1611348586804-61bf6c080437?auto=format&fit=crop&w=2000&q=80";
+const HERO = "/gallery/elephant-closeup-vehicle.jpg";
 
 const DayTrips = () => {
   const tours = byCategory("day-trip");
   return (
     <>
+      <Seo
+        title="Nairobi Day Trips & Excursions | Karembo Tours Kenya"
+        description="Half- and full-day Nairobi tours: National Park, Giraffe Centre, Sheldrick Elephant Orphanage, Karen Blixen, Bomas of Kenya and Mt. Longonot."
+        path="/day-trips"
+        image="/gallery/elephant-closeup-vehicle.jpg"
+      />
       <PageHero
         image={HERO}
         eyebrow="Nairobi"
