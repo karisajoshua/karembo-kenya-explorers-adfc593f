@@ -43,8 +43,31 @@ const BlogPost = () => {
   if (loading) return <div className="container-edge py-20 text-center text-muted-foreground">Loading…</div>;
   if (!post) return <div className="container-edge py-20 text-center"><h1 className="font-serif text-2xl text-primary">Post not found</h1></div>;
 
+  const desc = (post.excerpt || post.content.replace(/[#*`!\[\]()]/g, "").slice(0, 155)).trim();
+  const cover = post.cover_image || "/gallery/wildebeest-crossing.jpg";
+
   return (
     <article>
+      <Seo
+        title={`${post.title} | Karembo Tours Journal`}
+        description={desc}
+        path={`/blog/${post.slug}`}
+        image={cover}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          image: cover.startsWith("http") ? cover : `https://karembotours.co.ke${cover}`,
+          datePublished: post.created_at,
+          dateModified: post.created_at,
+          author: { "@type": "Organization", name: post.author || "Karembo Tours" },
+          publisher: { "@type": "Organization", name: "Karembo Tours and Safaris", logo: { "@type": "ImageObject", url: "https://karembotours.co.ke/gallery/lion-male.jpg" } },
+          mainEntityOfPage: `https://karembotours.co.ke/blog/${post.slug}`,
+          description: desc,
+          wordCount: post.content.split(/\s+/).length,
+        }}
+      />
       {post.cover_image && (
         <div className="aspect-[21/9] md:aspect-[3/1] overflow-hidden">
           <img src={post.cover_image} alt={post.title} className="h-full w-full object-cover" />
