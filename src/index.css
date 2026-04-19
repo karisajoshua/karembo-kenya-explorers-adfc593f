@@ -10,7 +10,7 @@
 
 @layer base {
   :root {
-    --background: 36 33% 96%;            /* warm sand cream */
+    --background: 0 0% 100%;             /* white */
     --foreground: 22 40% 12%;            /* deep brown ink */
 
     --card: 0 0% 100%;
@@ -41,7 +41,7 @@
     --input: 36 20% 85%;
     --ring: 35 64% 54%;
 
-    --radius: 0.5rem;
+    --radius: 0rem;
 
     --gradient-hero: linear-gradient(180deg, hsl(22 45% 8% / 0.1) 0%, hsl(22 45% 8% / 0.75) 100%);
     --gradient-amber: linear-gradient(135deg, hsl(35 70% 58%), hsl(28 65% 48%));
