@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { Compass, HeartHandshake, Sparkles, Quote, MessageCircle, Phone } from "lucide-react";
+import { Compass, HeartHandshake, Sparkles, Quote, MessageCircle, Phone, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 import { PackageCard } from "@/components/PackageCard";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { byCategory } from "@/data/tours";
+import { cn } from "@/lib/utils";
 
 const HERO = "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=80";
 const CULTURAL_IMG = "https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1400&q=80";
@@ -35,8 +37,8 @@ const testimonials = [
 ];
 
 const Home = () => {
-  const safaris = byCategory("safari").slice(0, 3);
-  const dayTrips = byCategory("day-trip").slice(0, 4);
+  const safaris = byCategory("safari").slice(0, 4);
+  const dayTrips = byCategory("day-trip").slice(0, 6);
 
   return (
     <>
@@ -56,60 +58,98 @@ const Home = () => {
       </PageHero>
 
       {/* Pillars */}
-      <section className="py-20 bg-sand">
+      <section className="py-20 bg-background">
         <div className="container-edge">
-          <SectionHeader
-            eyebrow="Why Karembo"
-            title="Crafted by locals, designed for you"
-            subtitle="Three promises that shape every journey we create."
-          />
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-12 md:grid-cols-3">
             {pillars.map((p) => (
-              <div key={p.title} className="text-center p-8 rounded-xl bg-background shadow-card">
-                <div className="mx-auto h-16 w-16 rounded-full bg-gradient-amber flex items-center justify-center mb-5">
-                  <p.icon className="h-7 w-7 text-primary" />
+              <div key={p.title} className="flex gap-5">
+                <div className="flex-shrink-0 h-16 w-16 rounded-full bg-secondary/15 flex items-center justify-center">
+                  <p.icon className="h-7 w-7 text-secondary" />
                 </div>
-                <h3 className="font-serif text-2xl text-primary mb-3">{p.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{p.body}</p>
+                <div>
+                  <h3 className="font-serif text-xl uppercase tracking-wider text-primary mb-3 font-semibold">{p.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{p.body}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Day trips */}
-      <section className="py-20">
+      {/* Day trips carousel */}
+      <section className="py-20 bg-sand">
         <div className="container-edge">
-          <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
-            <div className="max-w-2xl">
-              <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent mb-3">Unforgettable</p>
-              <h2 className="font-serif text-3xl md:text-4xl text-primary">Nairobi Day Trips</h2>
-              <p className="mt-3 text-muted-foreground">Half-day and full-day escapes to start or end your Kenyan adventure.</p>
-            </div>
-            <Link to="/day-trips" className="text-secondary font-semibold hover:text-accent">
-              View all day trips →
-            </Link>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {dayTrips.map((t) => <PackageCard key={t.slug} tour={t} />)}
+          <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-12">
+            Unforgettable Day Trips
+          </h2>
+          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <CarouselContent className="-ml-4">
+              {dayTrips.map((t) => (
+                <CarouselItem key={t.slug} className="pl-4 basis-4/5 sm:basis-1/2 lg:basis-1/3">
+                  <Link to={`/packages/${t.slug}`} className="group block relative aspect-[3/4] overflow-hidden rounded-xl">
+                    <img
+                      src={t.image}
+                      alt={t.title}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-6 text-primary-foreground">
+                      <h3 className="font-serif text-2xl mb-2 leading-tight">{t.title}</h3>
+                      <p className="text-sm text-primary-foreground/85">
+                        Budget Starts From: <span className="font-semibold text-accent">${t.priceFrom} per person</span>
+                      </p>
+                    </div>
+                  </Link>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex -left-4" />
+            <CarouselNext className="hidden md:flex -right-4" />
+          </Carousel>
+          <div className="text-center mt-12">
+            <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+              <Link to="/day-trips">Explore More Day Trips</Link>
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Popular safaris */}
-      <section className="py-20 bg-sand">
+      {/* Popular safaris — alternating split */}
+      <section className="py-20 bg-background">
         <div className="container-edge">
-          <SectionHeader
-            eyebrow="Most loved"
-            title="Popular Safari Packages"
-            subtitle="Our travellers' favourite multi-day journeys deep into the Masai Mara."
-          />
-          <div className="grid gap-6 md:grid-cols-3">
-            {safaris.map((t) => <PackageCard key={t.slug} tour={t} />)}
+          <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-16">
+            Our Popular Safari Packages
+          </h2>
+          <div className="space-y-16">
+            {safaris.map((t, i) => {
+              const reverse = i % 2 === 1;
+              return (
+                <div key={t.slug} className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                  <div className={cn("aspect-[4/3] overflow-hidden rounded-xl shadow-elegant", reverse && "lg:order-2")}>
+                    <img src={t.image} alt={t.title} loading="lazy" className="h-full w-full object-cover" />
+                  </div>
+                  <div className={cn(reverse && "lg:order-1")}>
+                    <h3 className="font-serif text-2xl md:text-3xl text-primary mb-3 leading-tight">{t.title}</h3>
+                    <div className="h-1 w-16 bg-accent mb-4" />
+                    <div className="flex items-center gap-2 text-sm text-secondary font-semibold uppercase tracking-wider mb-4">
+                      <Calendar className="h-4 w-4" />
+                      <span>{t.duration}</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed mb-6">{t.shortDescription}</p>
+                    <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                      <Link to={`/packages/${t.slug}`}>
+                        Discover More <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <div className="text-center mt-12">
-            <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-              <Link to="/safaris">See all safaris</Link>
+          <div className="text-center mt-16">
+            <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+              <Link to="/safaris">Explore More Packages</Link>
             </Button>
           </div>
         </div>
