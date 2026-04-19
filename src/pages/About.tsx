@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
 
-const HERO = "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=80";
-const STORY_IMG = "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1200&q=80";
+import HERO from "@/assets/uploads/lioness-resting.jpg";
+import STORY_IMG from "@/assets/uploads/lion-male.jpg";
 
 const values = [
   { icon: Award, title: "Authentic Expertise", body: "Decades of combined safari experience across Kenya." },
