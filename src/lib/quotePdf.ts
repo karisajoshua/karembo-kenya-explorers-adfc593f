@@ -1,4 +1,16 @@
 import jsPDF from "jspdf";
+import logoUrl from "@/assets/karembo-logo.png";
+
+const loadLogoDataUrl = async (): Promise<string> => {
+  const res = await fetch(logoUrl);
+  const blob = await res.blob();
+  return await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onloadend = () => resolve(r.result as string);
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+};
 
 export type QuoteData = {
   name: string;
@@ -12,24 +24,37 @@ export type QuoteData = {
   message?: string | null;
 };
 
-export const generateQuotePdf = (q: QuoteData) => {
+export const generateQuotePdf = async (q: QuoteData) => {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const W = doc.internal.pageSize.getWidth();
   const M = 48;
+  const BAND_H = 110;
 
   // Brand band
   doc.setFillColor(59, 36, 23); // #3b2417
-  doc.rect(0, 0, W, 90, "F");
+  doc.rect(0, 0, W, BAND_H, "F");
+
+  // Logo
+  try {
+    const dataUrl = await loadLogoDataUrl();
+    const logoH = 80;
+    const logoW = 80;
+    doc.addImage(dataUrl, "PNG", M, (BAND_H - logoH) / 2, logoW, logoH);
+  } catch (e) {
+    console.error("Logo load failed", e);
+  }
+
+  const textX = M + 100;
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.text("KAREMBO TOURS & SAFARIS", M, 42);
+  doc.setFontSize(20);
+  doc.text("KAREMBO TOURS & SAFARIS", textX, 50);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text("Dream Your Next Trip — Safari Experiences Designed Around You", M, 62);
-  doc.text("www.karembotours.co.ke", M, 78);
+  doc.setFontSize(9);
+  doc.text("Dream Your Next Trip — Safari Experiences Designed Around You", textX, 70);
+  doc.text("www.karembotours.co.ke", textX, 86);
 
-  let y = 130;
+  let y = 150;
   doc.setTextColor(40, 40, 40);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(16);
