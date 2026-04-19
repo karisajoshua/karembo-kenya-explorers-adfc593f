@@ -8,11 +8,7 @@ export const Footer = () => (
     <div className="container-edge py-16 grid gap-10 md:grid-cols-2 lg:grid-cols-4 relative z-10">
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <img src={logo} alt="Karembo Tour Safaris" className="h-16 w-auto" />
-          <div className="leading-tight">
-            <div className="font-serif text-xl font-bold text-primary">Karembo</div>
-            <div className="text-[10px] uppercase tracking-[0.2em] text-foreground/60">Tour Safaris</div>
-          </div>
+          <img src={logo} alt="Karembo Tour Safaris" className="h-20 w-auto" />
         </div>
         <p className="text-sm text-foreground/75 leading-relaxed">
           Tailor-made Kenyan safaris specializing in the Masai Mara and Nairobi. Crafted by locals, designed for you.
@@ -57,12 +53,21 @@ export const Footer = () => (
       </div>
     </div>
 
-    {/* Nairobi skyline silhouette */}
-    <img
-      src={skyline}
-      alt="Nairobi skyline"
+    {/* Nairobi skyline silhouette — recolored via CSS mask */}
+    <div
       aria-hidden="true"
-      className="pointer-events-none select-none w-full h-auto block relative z-0"
+      className="pointer-events-none select-none w-full block relative z-0 h-24 md:h-32"
+      style={{
+        backgroundColor: "#3b2417",
+        WebkitMaskImage: `url(${skyline})`,
+        maskImage: `url(${skyline})`,
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskSize: "100% 100%",
+        maskSize: "100% 100%",
+        WebkitMaskPosition: "bottom",
+        maskPosition: "bottom",
+      }}
     />
 
     <div className="border-t border-foreground/10 bg-sand relative z-10">
