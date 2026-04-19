@@ -27,9 +27,9 @@ export const Header = () => {
         "bg-background/90 border-border"
       )}
     >
-      <div className="container-edge flex h-20 items-center justify-between gap-4">
+      <div className="container-edge flex h-24 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3" aria-label="Karembo Tours home">
-          <img src={logo} alt="Karembo Tour Safaris logo" className="h-12 w-auto" />
+          <img src={logo} alt="Karembo Tour Safaris logo" className="h-20 md:h-24 w-auto" />
         </Link>
 
         <div className="hidden lg:block">
