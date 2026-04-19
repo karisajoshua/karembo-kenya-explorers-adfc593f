@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { PackageCard } from "@/components/PackageCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { byCategory } from "@/data/tours";
+import { cn } from "@/lib/utils";
 
 const HERO = "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=80";
 const CULTURAL_IMG = "https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1400&q=80";
