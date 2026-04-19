@@ -1,5 +1,7 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { Compass, HeartHandshake, Sparkles, Quote, MessageCircle, Phone, Calendar, ArrowRight } from "lucide-react";
+import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -37,8 +39,9 @@ const testimonials = [
 ];
 
 const Home = () => {
-  const safaris = byCategory("safari").slice(0, 4);
-  const dayTrips = byCategory("day-trip").slice(0, 6);
+  const safaris = byCategory("safari").slice(0, 3);
+  const dayTrips = byCategory("day-trip").slice(0, 8);
+  const autoplay = useRef(Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true }));
 
   return (
     <>
@@ -82,25 +85,47 @@ const Home = () => {
           <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-12">
             Unforgettable Day Trips
           </h2>
-          <Carousel opts={{ align: "start", loop: true }} className="w-full">
+          <Carousel
+            opts={{ align: "start", loop: true, dragFree: true }}
+            plugins={[autoplay.current]}
+            className="w-full"
+          >
             <CarouselContent className="-ml-4">
               {dayTrips.map((t) => (
-                <CarouselItem key={t.slug} className="pl-4 basis-4/5 sm:basis-1/2 lg:basis-1/3">
-                  <Link to={`/packages/${t.slug}`} className="group block relative aspect-[3/4] overflow-hidden rounded-xl">
-                    <img
-                      src={t.image}
-                      alt={t.title}
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-primary-foreground">
-                      <h3 className="font-serif text-2xl mb-2 leading-tight">{t.title}</h3>
-                      <p className="text-sm text-primary-foreground/85">
-                        Budget Starts From: <span className="font-semibold text-accent">${t.priceFrom} per person</span>
-                      </p>
+                <CarouselItem key={t.slug} className="pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/4">
+                  <div className="group relative aspect-[3/4] [perspective:1200px]">
+                    <div className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+                      {/* Front */}
+                      <div className="absolute inset-0 overflow-hidden rounded-xl [backface-visibility:hidden]">
+                        <img
+                          src={t.image}
+                          alt={t.title}
+                          loading="lazy"
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent" />
+                        <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
+                          <h3 className="font-serif text-xl mb-1 leading-tight">{t.title}</h3>
+                          <p className="text-xs text-primary-foreground/85">
+                            From <span className="font-semibold text-accent">${t.priceFrom} pp</span>
+                          </p>
+                        </div>
+                      </div>
+                      {/* Back */}
+                      <div className="absolute inset-0 rounded-xl bg-secondary text-secondary-foreground p-6 flex flex-col justify-center text-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                        <h3 className="font-serif text-xl mb-3 leading-tight">{t.title}</h3>
+                        <p className="text-sm leading-relaxed mb-5 line-clamp-5 opacity-90">
+                          {t.shortDescription}
+                        </p>
+                        <Link
+                          to={`/packages/${t.slug}`}
+                          className="inline-flex items-center justify-center gap-2 mx-auto text-sm font-semibold uppercase tracking-wider border-b-2 border-accent pb-1 hover:text-accent transition-colors"
+                        >
+                          View Details <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
                     </div>
-                  </Link>
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -115,38 +140,65 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Popular safaris — alternating split */}
+      {/* Popular safaris — mosaic */}
       <section className="py-20 bg-background">
         <div className="container-edge">
           <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-16">
             Our Popular Safari Packages
           </h2>
-          <div className="space-y-16">
-            {safaris.map((t, i) => {
-              const reverse = i % 2 === 1;
-              return (
-                <div key={t.slug} className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                  <div className={cn("aspect-[4/3] overflow-hidden rounded-xl shadow-elegant", reverse && "lg:order-2")}>
-                    <img src={t.image} alt={t.title} loading="lazy" className="h-full w-full object-cover" />
-                  </div>
-                  <div className={cn(reverse && "lg:order-1")}>
-                    <h3 className="font-serif text-2xl md:text-3xl text-primary mb-3 leading-tight">{t.title}</h3>
-                    <div className="h-1 w-16 bg-accent mb-4" />
-                    <div className="flex items-center gap-2 text-sm text-secondary font-semibold uppercase tracking-wider mb-4">
-                      <Calendar className="h-4 w-4" />
-                      <span>{t.duration}</span>
+          {safaris.length >= 3 && (
+            <div className="grid gap-6 lg:grid-cols-2 lg:auto-rows-fr">
+              {/* Left column — 2 stacked horizontal cards */}
+              {[safaris[0], safaris[1]].map((t, i) => {
+                const imageRight = i === 0;
+                return (
+                  <div
+                    key={t.slug}
+                    className="group grid grid-cols-1 sm:grid-cols-2 overflow-hidden rounded-xl border border-border bg-background shadow-card"
+                  >
+                    <div className={cn("aspect-[4/3] sm:aspect-auto overflow-hidden", imageRight ? "sm:order-2" : "sm:order-1")}>
+                      <img src={t.image} alt={t.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     </div>
-                    <p className="text-muted-foreground leading-relaxed mb-6">{t.shortDescription}</p>
-                    <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                      <Link to={`/packages/${t.slug}`}>
-                        Discover More <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    <div className={cn("p-6 flex flex-col justify-center", imageRight ? "sm:order-1" : "sm:order-2")}>
+                      <h3 className="font-serif text-xl text-primary mb-2 leading-tight">{t.title}</h3>
+                      <div className="h-1 w-12 bg-accent mb-3" />
+                      <div className="flex items-center gap-2 text-xs text-secondary font-semibold uppercase tracking-wider mb-3">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>{t.duration}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-3">{t.shortDescription}</p>
+                      <Button asChild variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
+                        <Link to={`/packages/${t.slug}`}>
+                          Discover More <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
+                );
+              })}
+
+              {/* Right column — vertical card spanning both rows */}
+              <div className="group lg:row-span-2 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
+                <div className="aspect-[4/3] lg:aspect-auto lg:h-[55%] overflow-hidden">
+                  <img src={safaris[2].image} alt={safaris[2].title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
-              );
-            })}
-          </div>
+                <div className="p-8 flex flex-col justify-center flex-1">
+                  <h3 className="font-serif text-2xl md:text-3xl text-primary mb-3 leading-tight">{safaris[2].title}</h3>
+                  <div className="h-1 w-16 bg-accent mb-4" />
+                  <div className="flex items-center gap-2 text-sm text-secondary font-semibold uppercase tracking-wider mb-4">
+                    <Calendar className="h-4 w-4" />
+                    <span>{safaris[2].duration}</span>
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed mb-6">{safaris[2].shortDescription}</p>
+                  <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
+                    <Link to={`/packages/${safaris[2].slug}`}>
+                      Discover More <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="text-center mt-16">
             <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
               <Link to="/safaris">Explore More Packages</Link>
