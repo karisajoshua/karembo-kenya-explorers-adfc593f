@@ -1,59 +1,43 @@
 
-## Karembo Tours — Kenya Safari Website
+## Plan: Refresh Home sections + Jost font + Mega menu
 
-A full clone of the Next Stop Tanzania structure, rebranded for **Karembo Tour Safaris** (leopard logo, Kenya focus: Nairobi & Masai Mara).
+### 1. Typography — switch to Jost
+- Add Google Fonts `Jost` link to `index.html` (replace Inter/Playfair imports)
+- Update `tailwind.config.ts`: set both `sans` and `serif` font families to `['Jost', 'sans-serif']` so existing `font-serif` classes on headings still work but render in Jost (matching reference's clean single-font look)
 
-### Brand & Design
-- **Logo**: Karembo leopard mark in the header
-- **Palette**: Deep brown (#3B2418) + safari green (#4A5D3A) + warm sand (#F5EFE6) + amber accent (#D89B3D) — pulled from the logo
-- **Typography**: Bold serif for headlines (Playfair-style) + clean sans for body, matching the logo's editorial feel
-- **Imagery**: Authentic Unsplash photography of Masai Mara wildlife, Nairobi landmarks, Maasai culture
+### 2. Home page — rebuild 3 sections to match reference screenshots
 
-### Pages
+**Pillars section** (replace current card-style):
+- Clean white background, no cards/shadows
+- 3 columns: light sage-green circle icon (left) + heading + body text
+- LOCAL EXPERTISE / FLEXIBILITY / CUSTOMIZATION — Kenya-focused copy (Masai Mara, Nairobi, Maasai culture)
 
-**1. Home (`/`)**
-- Sticky header with logo + nav (Safaris, Day Trips, Combo, Cultural, About, Contact) + "Request a Quote" CTA
-- Hero: full-bleed Mara savanna image, headline "The heart of tailor-made safaris in Kenya", CTAs (Plan Your Safari / Browse Packages)
-- Three pillars: Local Expertise · Flexibility · Customization
-- Unforgettable Day Trips carousel (Nairobi National Park, Giraffe Centre, Elephant Orphanage, Karen Blixen, Bomas of Kenya)
-- Popular Safari Packages grid (3-day Mara Classic, 5-day Great Migration, 7-day Mara + Nairobi Combo, etc.)
-- Cultural Experience section (Maasai village immersion)
-- "Talk to our safari experts" banner with WhatsApp + quote CTAs
-- Testimonials carousel
-- Affiliates strip (KATO, Magical Kenya, Ecotourism Kenya — placeholder logos)
-- Footer: quick links, contact info, social
+**Unforgettable Day Trips** (replace current grid):
+- Centered title only (no eyebrow/subtitle)
+- Horizontal carousel using existing shadcn `carousel` component, peek-edge effect (next/prev images partially visible)
+- Tall portrait cards (aspect ~3/4), image with dark gradient overlay, title + "Budget Starts From: $X per person" overlaid at bottom
+- Outlined "Explore More Day Trips" button centered below
 
-**2. Masai Mara Safaris (`/safaris`)**
-- Hero + intro
-- Grid of ~6 multi-day Mara packages with duration, price-from, image, "Discover More"
+**Popular Safari Packages** (replace current 3-card grid):
+- Centered title "OUR POPULAR SAFARI PACKAGES" (uppercase, tracked)
+- Alternating split layout: 2-col rows where image and text-panel swap sides per row
+- Text panel: title, amber underline divider, calendar-icon "X DAYS | Y NIGHTS", description, outlined "Discover More" button
+- Show 4 packages in this layout
+- Solid green "Explore More Packages" button centered below
 
-**3. Nairobi Day Trips (`/day-trips`)**
-- Grid of ~6 day excursions in/around Nairobi
+### 3. Mega menu in header
+- Desktop only: "Safaris", "Day Trips", "Combo", "Cultural" each open a full-width mega panel on hover
+- Panel contains: 3-4 featured tour cards (image thumb + title + duration + price-from) pulled from `byCategory()` in `tours.ts`, plus a "View all" link
+- Built with shadcn `navigation-menu` component (already in project)
+- Mobile: keep existing simple dropdown list (no change)
+- "About" and "Contact" remain plain links
 
-**4. Combo Safaris (`/combo`)**
-- Mara + Nairobi multi-day combined itineraries
+### Files to edit
+- `index.html` — Jost font link
+- `tailwind.config.ts` — font family
+- `src/pages/Home.tsx` — rewrite 3 sections
+- `src/components/layout/Header.tsx` — replace desktop nav with mega menu
 
-**5. Cultural Experiences (`/cultural`)**
-- Maasai village, Bomas of Kenya, community visits
-
-**6. Package Detail (`/packages/:slug`)**
-- Hero image, overview, day-by-day itinerary, what's included/excluded, pricing, gallery, "Request this Tour" CTA
-
-**7. About (`/about`)**
-- Story, why choose us, team values, affiliations
-
-**8. Contact / Request a Quote (`/contact`)**
-- Contact details (Nairobi office, phone, email, WhatsApp)
-- Quote form: name, email, phone, country, travel dates, group size, package interest, budget, message
-
-### Backend (Lovable Cloud)
-- `quote_requests` table storing all form submissions (RLS: public can insert; only authenticated admins can read)
-- Zod-validated form with toast confirmation on submit
-
-### Reusable Components
-- `Header` (sticky, mobile hamburger), `Footer`, `PackageCard`, `DayTripCard`, `Section`, `Hero`, `TestimonialCarousel`, `WhatsAppFloat` (floating WhatsApp chat button)
-
-### Out of Scope (v1)
-- Real payment / booking checkout
-- Multi-language switcher
-- Admin dashboard for viewing quotes (data accessible via Cloud DB UI)
+### Out of scope
+- Mobile mega menu (stays as simple list)
+- Re-styling other pages (Safaris, About, etc.) — only Home sections change now
