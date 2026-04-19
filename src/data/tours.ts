@@ -21,7 +21,7 @@ export const tours: Tour[] = [
     slug: '3-day-masai-mara-classic',
     title: '3-Day Masai Mara Classic Safari',
     duration: '3 Days / 2 Nights',
-    priceFrom: 720,
+    priceFrom: 485,
     category: 'safari',
     image: u('photo-1547471080-7cc2caa01a7e'),
     shortDescription:
@@ -45,7 +45,7 @@ export const tours: Tour[] = [
     slug: '5-day-great-migration',
     title: '5-Day Great Migration Safari',
     duration: '5 Days / 4 Nights',
-    priceFrom: 1480,
+    priceFrom: 1150,
     category: 'safari',
     image: u('photo-1516426122078-c23e76319801'),
     shortDescription:
@@ -71,7 +71,7 @@ export const tours: Tour[] = [
     slug: '7-day-mara-amboseli',
     title: '7-Day Masai Mara & Amboseli Discovery',
     duration: '7 Days / 6 Nights',
-    priceFrom: 2150,
+    priceFrom: 1790,
     category: 'safari',
     image: u('photo-1534177616072-ef7dc120449d'),
     shortDescription:
@@ -92,7 +92,7 @@ export const tours: Tour[] = [
     slug: '4-day-luxury-mara',
     title: '4-Day Luxury Mara Tented Camp',
     duration: '4 Days / 3 Nights',
-    priceFrom: 1890,
+    priceFrom: 1650,
     category: 'safari',
     image: u('photo-1549366021-9f761d040a94'),
     shortDescription:
@@ -112,7 +112,7 @@ export const tours: Tour[] = [
     slug: '6-day-mara-nakuru',
     title: '6-Day Mara, Nakuru & Naivasha Safari',
     duration: '6 Days / 5 Nights',
-    priceFrom: 1650,
+    priceFrom: 1390,
     category: 'safari',
     image: u('photo-1503614472-8c93d56e92ce'),
     shortDescription:
@@ -132,7 +132,7 @@ export const tours: Tour[] = [
     slug: '8-day-honeymoon-kenya',
     title: '8-Day Kenya Honeymoon Safari',
     duration: '8 Days / 7 Nights',
-    priceFrom: 3450,
+    priceFrom: 2950,
     category: 'safari',
     image: u('photo-1516426122078-c23e76319801', 1400),
     shortDescription:
@@ -154,7 +154,7 @@ export const tours: Tour[] = [
     slug: 'nairobi-national-park',
     title: 'Nairobi National Park Day Trip',
     duration: 'Half Day',
-    priceFrom: 95,
+    priceFrom: 85,
     category: 'day-trip',
     image: u('photo-1535941339077-2dd1c7963098'),
     shortDescription:
@@ -169,7 +169,7 @@ export const tours: Tour[] = [
     slug: 'giraffe-centre-elephant-orphanage',
     title: 'Giraffe Centre & Elephant Orphanage',
     duration: 'Half Day',
-    priceFrom: 75,
+    priceFrom: 60,
     category: 'day-trip',
     image: u('photo-1547471080-7cc2caa01a7e', 900),
     shortDescription:
@@ -184,7 +184,7 @@ export const tours: Tour[] = [
     slug: 'karen-blixen-museum',
     title: 'Karen Blixen Museum & Kazuri Beads',
     duration: 'Half Day',
-    priceFrom: 65,
+    priceFrom: 55,
     category: 'day-trip',
     image: u('photo-1591025207163-942350e47db2'),
     shortDescription:
@@ -199,7 +199,7 @@ export const tours: Tour[] = [
     slug: 'bomas-of-kenya',
     title: 'Bomas of Kenya Cultural Show',
     duration: 'Half Day',
-    priceFrom: 55,
+    priceFrom: 45,
     category: 'day-trip',
     image: u('photo-1523805009345-7448845a9e53'),
     shortDescription:
@@ -214,7 +214,7 @@ export const tours: Tour[] = [
     slug: 'nairobi-city-tour',
     title: 'Nairobi City Highlights Tour',
     duration: 'Full Day',
-    priceFrom: 110,
+    priceFrom: 95,
     category: 'day-trip',
     image: u('photo-1611348586804-61bf6c080437'),
     shortDescription:
@@ -229,7 +229,7 @@ export const tours: Tour[] = [
     slug: 'mt-longonot-hike',
     title: 'Mt. Longonot Day Hike',
     duration: 'Full Day',
-    priceFrom: 90,
+    priceFrom: 75,
     category: 'day-trip',
     image: u('photo-1503614472-8c93d56e92ce', 900),
     shortDescription:
@@ -246,7 +246,7 @@ export const tours: Tour[] = [
     slug: 'combo-nairobi-mara-5day',
     title: '5-Day Nairobi & Masai Mara Combo',
     duration: '5 Days / 4 Nights',
-    priceFrom: 1320,
+    priceFrom: 1090,
     category: 'combo',
     image: u('photo-1611348586804-61bf6c080437', 1400),
     shortDescription:
@@ -265,7 +265,7 @@ export const tours: Tour[] = [
     slug: 'combo-nairobi-mara-amboseli-7day',
     title: '7-Day Nairobi, Mara & Amboseli Combo',
     duration: '7 Days / 6 Nights',
-    priceFrom: 2280,
+    priceFrom: 1890,
     category: 'combo',
     image: u('photo-1534177616072-ef7dc120449d', 1400),
     shortDescription:
@@ -285,7 +285,7 @@ export const tours: Tour[] = [
     slug: 'combo-mara-diani-9day',
     title: '9-Day Masai Mara & Diani Beach',
     duration: '9 Days / 8 Nights',
-    priceFrom: 2890,
+    priceFrom: 2490,
     category: 'combo',
     image: u('photo-1559825481-12a05cc00344'),
     shortDescription:
@@ -305,7 +305,7 @@ export const tours: Tour[] = [
     slug: 'maasai-village-immersion',
     title: 'Maasai Village Cultural Immersion',
     duration: '2 Days / 1 Night',
-    priceFrom: 380,
+    priceFrom: 320,
     category: 'cultural',
     image: u('photo-1523805009345-7448845a9e53', 1400),
     shortDescription:
@@ -323,7 +323,7 @@ export const tours: Tour[] = [
     slug: 'bomas-cultural-deep-dive',
     title: 'Bomas of Kenya Deep Dive',
     duration: 'Full Day',
-    priceFrom: 95,
+    priceFrom: 80,
     category: 'cultural',
     image: u('photo-1523805009345-7448845a9e53'),
     shortDescription:
@@ -338,7 +338,7 @@ export const tours: Tour[] = [
     slug: 'samburu-cultural-extension',
     title: 'Samburu Cultural Extension',
     duration: '3 Days / 2 Nights',
-    priceFrom: 720,
+    priceFrom: 640,
     category: 'cultural',
     image: u('photo-1591025207163-942350e47db2', 1400),
     shortDescription:

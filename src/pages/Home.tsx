@@ -241,7 +241,7 @@ const Home = () => {
               <Link to="/contact"><Phone className="h-4 w-4" /> Request a Quote</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              <a href="https://wa.me/254700123456" target="_blank" rel="noopener noreferrer">
+              <a href="https://wa.me/254722736130" target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="h-4 w-4" /> WhatsApp Us
               </a>
             </Button>

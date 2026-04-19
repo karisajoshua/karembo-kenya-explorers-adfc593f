@@ -18,32 +18,40 @@ const About = () => (
   <>
     <PageHero
       image={HERO}
-      eyebrow="Our Story"
-      title="About Karembo Tours"
-      subtitle="A small Nairobi-based team with a big love for Kenya's wild places and warm people."
+      eyebrow="Dream Your Next Trip"
+      title="Safari Experiences Designed Around You"
+      subtitle="Karembo Tours and Safaris — a trusted Kenyan tour company creating meaningful wildlife and cultural travel experiences."
     />
 
     <section className="py-20">
       <div className="container-edge grid lg:grid-cols-2 gap-12 items-center">
-        <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-elegant">
+        <div className="aspect-[4/5] overflow-hidden shadow-elegant">
           <img src={STORY_IMG} alt="Karembo team in the Mara" className="h-full w-full object-cover" loading="lazy" />
         </div>
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent mb-3">The Karembo story</p>
-          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-5">Born of the Mara, raised in Nairobi</h2>
+          <h2 className="font-serif text-3xl md:text-4xl text-primary mb-5">Based in Nairobi, born for Kenya</h2>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              Karembo Tour Safaris was founded by a small group of Kenyan guides and travel-lovers
-              who grew up between the bustle of Nairobi and the silence of the Mara plains.
+              Based in Nairobi, Karembo Tours and Safaris is a trusted Kenyan tour company creating
+              meaningful wildlife and cultural travel experiences for visitors from around the world.
+              We specialize in thoughtfully planned safaris and tours that showcase Kenya's natural
+              beauty, rich heritage, and unforgettable wildlife.
             </p>
             <p>
-              Karembo means "beautiful" in Swahili — a name that captures both the land we
-              call home and the experiences we work to create for every traveller who joins us.
+              Whether you're visiting Kenya for the first time or returning to explore more, our goal
+              is simple: to help you experience the country in a way that feels authentic, comfortable,
+              and memorable.
             </p>
             <p>
-              We don't sell shelf-package tours. Every itinerary is built by hand, in
-              conversation with you, by people who actually live where you're going.
+              We offer flexible travel options suited to solo travellers, couples, families, and groups —
+              from short city-based excursions to multi-day safaris across Kenya's most iconic destinations.
             </p>
+            <ul className="space-y-2 pl-5 list-disc marker:text-accent">
+              <li>Guided game drives where you may encounter lions, elephants, giraffes, buffalo and more in their natural habitats.</li>
+              <li>Day trips and excursions to nearby national parks, conservation centres, and cultural sites.</li>
+              <li>Travel styles from day tours and weekend getaways to private safaris and group packages.</li>
+            </ul>
           </div>
         </div>
       </div>

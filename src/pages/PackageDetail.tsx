@@ -100,7 +100,7 @@ const PackageDetail = () => {
                 <Link to={`/contact?package=${tour.slug}`}>Request this Tour</Link>
               </Button>
               <Button asChild variant="outline" className="w-full">
-                <a href={`https://wa.me/254700123456?text=Hi%20Karembo%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(tour.title)}`} target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/254722736130?text=Hi%20Karembo%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(tour.title)}`} target="_blank" rel="noopener noreferrer">
                   WhatsApp Enquiry
                 </a>
               </Button>

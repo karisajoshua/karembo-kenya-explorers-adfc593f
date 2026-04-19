@@ -36,9 +36,10 @@ export const Footer = () => (
       <div>
         <h4 className="font-serif text-lg mb-4 text-primary">Contact</h4>
         <ul className="space-y-3 text-sm text-foreground/75">
-          <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> Karen Plains Rd, Nairobi, Kenya</li>
-          <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> +254 700 123 456</li>
-          <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> hello@karembotours.com</li>
+          <li className="flex gap-2"><MapPin className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> 11th Street Kangawa, Ngong Road, Nairobi, Kenya</li>
+          <li className="flex gap-2"><Phone className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> <span>+254 722 736 130<br/>+254 757 223 301</span></li>
+          <li className="flex gap-2"><Mail className="h-4 w-4 mt-0.5 shrink-0 text-accent" /> <span>info@karembotours.co.ke<br/>reservations@karembotours.co.ke</span></li>
+          <li className="flex gap-2"><span className="text-accent shrink-0">🌐</span> <a href="https://www.karembotours.co.ke" className="hover:text-accent">www.karembotours.co.ke</a></li>
         </ul>
       </div>
 

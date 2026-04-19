@@ -83,10 +83,10 @@ const Contact = () => {
               <p className="text-muted-foreground text-sm">Our team is based in Nairobi and replies fast.</p>
             </div>
             {[
-              { icon: MapPin, title: "Office", body: "Karen Plains Rd\nNairobi, Kenya" },
-              { icon: Phone, title: "Phone", body: "+254 700 123 456" },
-              { icon: Mail, title: "Email", body: "hello@karembotours.com" },
-              { icon: MessageCircle, title: "WhatsApp", body: "+254 700 123 456" },
+              { icon: MapPin, title: "Office", body: "11th Street Kangawa\nNgong Road, Nairobi, Kenya" },
+              { icon: Phone, title: "Phone", body: "+254 722 736 130\n+254 757 223 301" },
+              { icon: Mail, title: "Email", body: "info@karembotours.co.ke\nreservations@karembotours.co.ke" },
+              { icon: MessageCircle, title: "WhatsApp", body: "+254 722 736 130" },
             ].map((c) => (
               <div key={c.title} className="flex gap-4">
                 <div className="h-11 w-11 rounded-lg bg-sand flex items-center justify-center shrink-0">
