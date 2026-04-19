@@ -52,7 +52,7 @@ const Home = () => {
   return (
     <>
       <PageHero
-        image={HERO}
+        images={HERO_IMAGES}
         size="tall"
         eyebrow="Karembo Tour Safaris"
         title="The heart of tailor-made safaris in Kenya"
