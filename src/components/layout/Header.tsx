@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/karembo-logo.png";
 import { cn } from "@/lib/utils";
+import { MegaMenu } from "@/components/MegaMenu";
 
 const nav = [
   { to: "/safaris", label: "Safaris" },
@@ -31,22 +32,9 @@ export const Header = () => {
           <img src={logo} alt="Karembo Tour Safaris logo" className="h-12 w-auto" />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-8">
-          {nav.map((n) => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              className={({ isActive }) =>
-                cn(
-                  "text-sm font-medium transition-colors hover:text-accent",
-                  isActive ? "text-accent" : "text-foreground/80"
-                )
-              }
-            >
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
+        <div className="hidden lg:block">
+          <MegaMenu />
+        </div>
 
         <div className="hidden lg:block">
           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
