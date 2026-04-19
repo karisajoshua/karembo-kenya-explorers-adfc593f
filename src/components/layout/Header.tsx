@@ -29,10 +29,6 @@ export const Header = () => {
       <div className="container-edge flex h-20 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3" aria-label="Karembo Tours home">
           <img src={logo} alt="Karembo Tour Safaris logo" className="h-12 w-auto" />
-          <span className="hidden sm:flex flex-col leading-tight">
-            <span className="font-serif text-lg font-bold text-primary">Karembo</span>
-            <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Tour Safaris</span>
-          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">
