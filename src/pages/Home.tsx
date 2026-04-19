@@ -9,6 +9,7 @@ import { PackageCard } from "@/components/PackageCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { byCategory } from "@/data/tours";
 import { cn } from "@/lib/utils";
+import { Seo, orgJsonLd } from "@/components/Seo";
 
 import HERO from "@/assets/uploads/wildebeest-crossing.jpg";
 import HERO_2 from "@/assets/uploads/elephant-tusks.jpg";

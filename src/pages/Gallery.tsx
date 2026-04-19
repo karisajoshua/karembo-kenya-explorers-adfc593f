@@ -23,6 +23,12 @@ const Gallery = () => {
 
   return (
     <>
+      <Seo
+        title="Kenya Safari Photo Gallery | Karembo Tours"
+        description="Wildlife, landscapes and behind-the-scenes safari photography from Karembo Tours' trips across the Masai Mara, Amboseli and beyond."
+        path="/gallery"
+        image="/gallery/wildebeest-herd-mara.jpg"
+      />
       <PageHero image={HERO} eyebrow="Through the lens" title="Gallery" subtitle="A glimpse of Kenya through our cameras — wildlife, landscapes, and the people who make every safari unforgettable." />
       <section className="py-16">
         <div className="container-edge">
