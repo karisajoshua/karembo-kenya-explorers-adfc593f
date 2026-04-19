@@ -44,7 +44,18 @@ const Contact = () => {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase.from("quote_requests").insert([parsed.data]);
+    const payload = {
+      name: parsed.data.name,
+      email: parsed.data.email,
+      phone: parsed.data.phone || null,
+      country: parsed.data.country || null,
+      travel_dates: parsed.data.travel_dates || null,
+      group_size: parsed.data.group_size || null,
+      package_interest: parsed.data.package_interest || null,
+      budget: parsed.data.budget || null,
+      message: parsed.data.message || null,
+    };
+    const { error } = await supabase.from("quote_requests").insert([payload]);
     setSubmitting(false);
     if (error) {
       toast.error("Something went wrong. Please try again.");
