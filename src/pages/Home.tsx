@@ -147,7 +147,7 @@ const Home = () => {
             Our Popular Safari Packages
           </h2>
           {safaris.length >= 3 && (
-            <div className="grid gap-6 lg:grid-cols-2 lg:auto-rows-fr">
+            <div className="grid gap-6 md:grid-cols-2 md:auto-rows-fr">
               {/* Left column — 2 stacked horizontal cards */}
               {[safaris[0], safaris[1]].map((t, i) => {
                 const imageRight = i === 0;
@@ -178,8 +178,8 @@ const Home = () => {
               })}
 
               {/* Right column — vertical card spanning both rows */}
-              <div className="group lg:row-span-2 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
-                <div className="aspect-[4/3] lg:aspect-auto lg:h-[55%] overflow-hidden">
+              <div className="group md:row-span-2 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
+                <div className="aspect-[4/3] md:aspect-auto md:h-[55%] overflow-hidden">
                   <img src={safaris[2].image} alt={safaris[2].title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <div className="p-8 flex flex-col justify-center flex-1">
