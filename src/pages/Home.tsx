@@ -178,7 +178,7 @@ const Home = () => {
               })}
 
               {/* Right column — vertical card spanning both rows */}
-              <div className="group md:row-span-2 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
+              <div className="group md:row-span-2 md:col-start-2 md:row-start-1 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
                 <div className="aspect-[4/3] md:aspect-auto md:h-[55%] overflow-hidden">
                   <img src={safaris[2].image} alt={safaris[2].title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
