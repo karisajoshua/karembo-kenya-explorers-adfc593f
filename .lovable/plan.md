@@ -1,59 +1,79 @@
 
 
-## Plan: Update contacts everywhere + competitive pricing + brand copy
+## Plan: Blog, Gallery, Admin Dashboard + PDF Quote Delivery
 
-### 1. Replace fake contact info globally with real details
-Real contacts to use everywhere:
-- **Phones**: +254 722 736 130, +254 757 223 301
-- **Email**: info@karembotours.co.ke (general), reservations@karembotours.co.ke (bookings)
-- **Address**: 11th Street Kangawa, Ngong Road, Nairobi, Kenya
-- **Website**: www.karembotours.co.ke
-- **WhatsApp**: 254722736130 (use first phone)
+### 1. Authentication & Admin Roles
+- Add **email/password auth** (login page only — no public signup; admins are invited)
+- Create `profiles` table (id, email, full_name) with auto-create trigger on signup
+- Create `app_role` enum (`admin`, `user`) and `user_roles` table
+- Add `has_role()` SECURITY DEFINER function (prevents RLS recursion)
+- Seed: first admin created manually via SQL after first signup
 
-Files to update:
-- `src/components/layout/Footer.tsx` — replace address, phone (show both), email (info@)
-- `src/pages/Contact.tsx` — replace all 4 contact cards (Office, Phone shows both, Email shows both, WhatsApp uses real number)
-- `src/components/WhatsAppFloat.tsx` — change `wa.me/254700123456` → `wa.me/254722736130`
-- `src/pages/PackageDetail.tsx` — update WhatsApp link to real number
-- `src/pages/Home.tsx` — update "WhatsApp Us" CTA link
+### 2. Database Schema (new tables)
 
-### 2. Make pricing more competitive
-Researched market: budget Mara 3-day starts ~$397, mid-range ~$745, 7-day Mara/Amboseli mid-range ~$2,000, Nairobi NP half-day ~$95–$120/pp.
-
-Adjust `src/data/tours.ts` `priceFrom` to undercut/match market while staying realistic:
-
-| Package | Old | New |
+| Table | Key columns | Purpose |
 |---|---|---|
-| 3-Day Masai Mara Classic | $720 | **$485** |
-| 5-Day Great Migration | $1,480 | **$1,150** |
-| 7-Day Mara & Amboseli | $2,150 | **$1,790** |
-| 4-Day Luxury Mara Tented | $1,890 | **$1,650** |
-| 6-Day Mara, Nakuru & Naivasha | $1,650 | **$1,390** |
-| 8-Day Honeymoon Kenya | $3,450 | **$2,950** |
-| Nairobi National Park Day Trip | $95 | **$85** |
-| Giraffe Centre & Elephant Orphanage | $75 | **$60** |
-| Karen Blixen & Kazuri | $65 | **$55** |
-| Bomas of Kenya | $55 | **$45** |
-| Nairobi City Tour | $110 | **$95** |
-| Mt. Longonot Day Hike | $90 | **$75** |
-| 5-Day Nairobi & Mara Combo | $1,320 | **$1,090** |
-| 7-Day Nairobi/Mara/Amboseli Combo | $2,280 | **$1,890** |
-| 9-Day Mara & Diani | $2,890 | **$2,490** |
-| Maasai Village Immersion | $380 | **$320** |
-| Bomas Deep Dive | $95 | **$80** |
-| Samburu Cultural Extension | $720 | **$640** |
+| `profiles` | id, email, full_name | User info |
+| `user_roles` | user_id, role | Admin/user roles |
+| `blog_posts` | id, slug, title, excerpt, content, cover_image, author, published, created_at | Blog content |
+| `gallery_images` | id, image_url, caption, category, sort_order | Gallery |
+| `site_images` | id, key (unique, e.g. "home_hero"), image_url, alt | Editable section images |
+| `packages` | id, slug, title, category, duration, price_from, image, summary, highlights[], itinerary(jsonb), inclusions[], exclusions[] | Replaces hardcoded `tours.ts` |
 
-### 3. Add the new brand story copy to About page
-Update `src/pages/About.tsx` story section with provided copy:
-- Tagline: "Dream Your Next Trip — Safari Experiences Designed Around You"
-- Replace the 3 story paragraphs with the new "Based in Nairobi… trusted Kenyan tour company…" intro and the "flexible travel options suited to solo travellers, couples, families, and groups" paragraph.
-- Add a 3-bullet list under values or as a sub-section: guided game drives, day trips & excursions, flexible travel styles.
+RLS: public SELECT on blog/gallery/site_images/packages (where published); admin-only INSERT/UPDATE/DELETE via `has_role(auth.uid(),'admin')`. `quote_requests` already exists — add admin SELECT policy.
 
-### 4. Add SEO/meta + footer website link
-- `index.html` — update `<title>` and meta description to mention Karembo Tours and Safaris and karembotours.co.ke
-- `Footer.tsx` — add website URL line under contact
+### 3. Storage
+- Create `site-assets` bucket (public) for blog covers, gallery, section images, package images
+- Admin-only write policies; public read
+
+### 4. Public-facing pages (new)
+- `/blog` — grid of 8 seeded posts (cards: cover, title, excerpt, date)
+- `/blog/:slug` — single post page
+- `/gallery` — masonry/grid gallery with category filter
+- Add "Blog" and "Gallery" links to header nav + mega menu
+
+### 5. Admin section (`/admin/*`, protected)
+- `/admin/login` — login form
+- `/admin` — dashboard layout with sidebar:
+  - **Quote Requests** — table view of `quote_requests`, mark as read, view detail
+  - **Packages** — list / create / edit / delete (image upload, all fields)
+  - **Blog Posts** — list / create / edit / delete (cover upload, rich textarea)
+  - **Gallery** — upload images, edit captions, reorder, delete
+  - **Site Images** — edit hero/section images by key (Home hero, About hero, etc.)
+- Route guard: redirect non-admins to `/admin/login`
+
+### 6. Quote → PDF + Email flow
+On contact form submit:
+1. Insert into `quote_requests` (already works)
+2. Call new edge function `send-quote-confirmation`:
+   - Generates PDF using **pdf-lib** (Deno-compatible) with: Karembo logo, company contacts (phone/email/address), client's submitted details, package interest, timestamp
+   - Sends email to client (with PDF attached) using **Lovable transactional email** (built-in, no API key)
+   - Sends notification email to `info@karembotours.co.ke` with the request details
+3. Requires email domain setup → use `<lov-open-email-setup>` if not configured
+
+### 7. Migrate hardcoded tours → DB
+- Seed `packages` table from current `src/data/tours.ts` (18 packages, current prices)
+- Update `Safaris`, `DayTrips`, `Combo`, `Cultural`, `PackageDetail`, `Home`, `Contact` to fetch from `packages` table via supabase
+
+### 8. Seed content
+- 8 blog posts (Kenya travel topics: Best time to visit Mara, Big Five guide, Packing list, Cultural etiquette, Honeymoon ideas, Budget safari tips, Nairobi day trips, Conservation stories) — placeholder Unsplash covers
+- ~12 gallery images (Unsplash safari/Kenya scenes) across categories: Wildlife, Landscapes, Culture, People
+
+### Files to add/edit
+**New pages**: `Blog.tsx`, `BlogPost.tsx`, `Gallery.tsx`, `admin/Login.tsx`, `admin/Layout.tsx`, `admin/Dashboard.tsx`, `admin/QuoteRequests.tsx`, `admin/Packages.tsx`, `admin/PackageEdit.tsx`, `admin/BlogPosts.tsx`, `admin/BlogEdit.tsx`, `admin/Gallery.tsx`, `admin/SiteImages.tsx`
+**New components**: `admin/AdminSidebar.tsx`, `admin/ImageUploader.tsx`, `ProtectedAdminRoute.tsx`
+**New hooks**: `useAuth.tsx`, `useIsAdmin.tsx`
+**Edge function**: `supabase/functions/send-quote-confirmation/index.ts`
+**Edits**: `App.tsx` (routes), `Header.tsx` + `MegaMenu.tsx` (nav links), `Contact.tsx` (call edge function), all package-list pages (fetch from DB)
+**Migrations**: profiles, roles, blog_posts, gallery_images, site_images, packages tables + RLS + storage bucket + seed data
+
+### Setup required from you
+- After first admin signs up, I'll prompt to assign admin role via SQL
+- Email domain must be configured for client/admin email delivery (I'll show the setup dialog)
 
 ### Out of scope
-- No new pages, no design changes, no new images
-- Tour itineraries/highlights stay the same — only `priceFrom` changes
+- Rich text editor (use plain markdown/textarea for blog body)
+- Multi-author blog management
+- Blog comments
+- Image cropping in admin
 
