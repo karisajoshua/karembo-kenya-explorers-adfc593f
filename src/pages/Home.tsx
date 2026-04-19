@@ -10,9 +10,9 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { byCategory } from "@/data/tours";
 import { cn } from "@/lib/utils";
 
-const HERO = "https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=2000&q=80";
-const CULTURAL_IMG = "https://images.unsplash.com/photo-1523805009345-7448845a9e53?auto=format&fit=crop&w=1400&q=80";
-const BANNER_IMG = "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=2000&q=80";
+import HERO from "@/assets/uploads/wildebeest-crossing.jpg";
+import CULTURAL_IMG from "@/assets/uploads/safari-binoculars.jpg";
+import BANNER_IMG from "@/assets/uploads/elephant-crossing.jpg";
 
 const pillars = [
   {

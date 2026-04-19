@@ -2,7 +2,7 @@ import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
 import { byCategory } from "@/data/tours";
 
-const HERO = "https://images.unsplash.com/photo-1534177616072-ef7dc120449d?auto=format&fit=crop&w=2000&q=80";
+import HERO from "@/assets/uploads/elephant-tusks.jpg";
 
 const Safaris = () => {
   const tours = byCategory("safari");
