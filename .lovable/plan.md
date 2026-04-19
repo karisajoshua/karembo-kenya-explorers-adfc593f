@@ -1,43 +1,42 @@
 
-## Plan: Refresh Home sections + Jost font + Mega menu
+## Plan: Day Trips flip cards + Safari packages mosaic layout
 
-### 1. Typography — switch to Jost
-- Add Google Fonts `Jost` link to `index.html` (replace Inter/Playfair imports)
-- Update `tailwind.config.ts`: set both `sans` and `serif` font families to `['Jost', 'sans-serif']` so existing `font-serif` classes on headings still work but render in Jost (matching reference's clean single-font look)
+### 1. Day Trips section (Home.tsx)
+- Show **4 cards visible at once** on desktop (`basis-1/4`), 2 on tablet, 1.2 on mobile (peek)
+- **Auto-scroll left** continuously using `embla-carousel-autoplay` plugin (already a peer of shadcn carousel) — install if missing, else use a simple `setInterval` calling `api.scrollNext()` with `loop: true` and slow speed
+- **Flip on hover**: each card becomes a 3D flip container
+  - Front: current image + title + price overlay
+  - Back: sage-green background, title, short description, "View Details" link
+  - CSS: `perspective` on parent, `transform-style: preserve-3d`, `rotate-y-180` on hover, `backface-visibility: hidden` on faces
+  - Add small utility classes inline via Tailwind arbitrary values (`[transform-style:preserve-3d]`, `[backface-visibility:hidden]`, `group-hover:[transform:rotateY(180deg)]`)
 
-### 2. Home page — rebuild 3 sections to match reference screenshots
+### 2. Popular Safari Packages — mosaic layout (matches reference)
+Replace the current alternating split with a **2-column asymmetric grid** (using first 3 packages):
 
-**Pillars section** (replace current card-style):
-- Clean white background, no cards/shadows
-- 3 columns: light sage-green circle icon (left) + heading + body text
-- LOCAL EXPERTISE / FLEXIBILITY / CUSTOMIZATION — Kenya-focused copy (Masai Mara, Nairobi, Maasai culture)
+```text
+┌──────────────────┬──────────────────┐
+│ Card 1           │                  │
+│ [text | image ]  │                  │
+│ horizontal       │   Card 3         │
+├──────────────────┤   vertical       │
+│ Card 2           │   [image top]    │
+│ [image | text]   │   [text below]   │
+│ horizontal       │                  │
+└──────────────────┴──────────────────┘
+```
 
-**Unforgettable Day Trips** (replace current grid):
-- Centered title only (no eyebrow/subtitle)
-- Horizontal carousel using existing shadcn `carousel` component, peek-edge effect (next/prev images partially visible)
-- Tall portrait cards (aspect ~3/4), image with dark gradient overlay, title + "Budget Starts From: $X per person" overlaid at bottom
-- Outlined "Explore More Day Trips" button centered below
-
-**Popular Safari Packages** (replace current 3-card grid):
-- Centered title "OUR POPULAR SAFARI PACKAGES" (uppercase, tracked)
-- Alternating split layout: 2-col rows where image and text-panel swap sides per row
-- Text panel: title, amber underline divider, calendar-icon "X DAYS | Y NIGHTS", description, outlined "Discover More" button
-- Show 4 packages in this layout
-- Solid green "Explore More Packages" button centered below
-
-### 3. Mega menu in header
-- Desktop only: "Safaris", "Day Trips", "Combo", "Cultural" each open a full-width mega panel on hover
-- Panel contains: 3-4 featured tour cards (image thumb + title + duration + price-from) pulled from `byCategory()` in `tours.ts`, plus a "View all" link
-- Built with shadcn `navigation-menu` component (already in project)
-- Mobile: keep existing simple dropdown list (no change)
-- "About" and "Contact" remain plain links
+- **Left column** (`lg:col-span-1`, stacked): 2 horizontal cards
+  - Card 1: text-left / image-right (50/50 split inside card)
+  - Card 2: image-left / text-right (alternating)
+- **Right column** (`lg:col-span-1`, full height): 1 vertical card — large image on top (~55% height), text panel below
+- All cards: white bg, subtle border, title, amber divider, calendar+duration, description (clamped), outlined "Discover More" button
+- Grid: `lg:grid-cols-2 gap-6`, right card uses `lg:row-span-2` so it spans both rows
+- Below grid: centered green "Explore More Packages" button (keep)
 
 ### Files to edit
-- `index.html` — Jost font link
-- `tailwind.config.ts` — font family
-- `src/pages/Home.tsx` — rewrite 3 sections
-- `src/components/layout/Header.tsx` — replace desktop nav with mega menu
+- `src/pages/Home.tsx` — rewrite Day Trips carousel (flip + autoplay) and Safari Packages section (mosaic grid)
+- `package.json` — add `embla-carousel-autoplay` if not present (otherwise use manual interval)
 
 ### Out of scope
-- Mobile mega menu (stays as simple list)
-- Re-styling other pages (Safaris, About, etc.) — only Home sections change now
+- Touching other pages or the mega menu
+- Changing tour data
