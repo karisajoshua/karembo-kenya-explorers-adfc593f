@@ -1,45 +1,34 @@
 
+## Plan: Wire uploaded images to Day Trips & add Partners section
 
-## Plan: Add new day-trip packages + switch pages to live DB data
+### 1. Day Trips images (first 4 uploads → matching packages)
+Upload to `public/day-trips/` and assign via DB UPDATE to the matching package's `image` column:
 
-### Findings
-1. **Day Trips page (and Safaris/Combo/Cultural/Home) still read from static `src/data/tours.ts`** — not the database. That's why earlier image/content updates didn't show on the front-end. The MegaMenu was switched to DB but the listing pages weren't.
-2. **Existing packages** already cover most of the screenshots, but with different naming/scope. Comparing screenshots → DB:
+| Upload | Package slug | New image path |
+|---|---|---|
+| `hells_gate.jpg` | `hells-gate-naivasha-boat` | `/day-trips/hells-gate.jpg` |
+| `coffer_farm.jpg` | `fairview-coffee-farm` | `/day-trips/coffee-farm.jpg` |
+| `giraffe_centre.jpg` | `nairobi-park-orphanage-giraffe` | `/day-trips/giraffe-centre.jpg` |
+| `karen_Blixen.jpg` | (Karen Blixen day trip — find existing slug, else attach to `nairobi-park-orphanage`) | `/day-trips/karen-blixen.jpg` |
 
-| Screenshot package | Status in DB |
-|---|---|
-| Hells Gate NP + Lake Naivasha boat ride | **MISSING** — add |
-| Fairview Coffee Farm Tour | **MISSING** — add |
-| Nairobi NP + Elephant Orphanage + Giraffe Centre | **MISSING** as combined trio — add (have separate ones) |
-| Nairobi NP + Elephant Orphanage | **MISSING** as pair — add |
-| Day Tour Nairobi National Park | exists as `nairobi-national-park` — keep |
+Will first query `packages` where `category='day-trip'` to confirm slugs and decide best mapping for the Karen Blixen image (likely an existing `karen-blixen` package).
 
-### What I'll do
+### 2. New "Proud Members & Partners" section (uploads 5-8)
+Copy logos to `public/partners/`:
+- `KATO_lOGO.png` → KATO (Kenya Association of Tour Operators)
+- `Magical_Kenya.jpg` → Magical Kenya / Kenya Tourism Board
+- `Tourism_regulatory.png` → Tourism Regulatory Authority
+- `trip_advisor.png` → TripAdvisor
 
-**1. Add 4 new day-trip packages to DB** with researched competitive Kenya market pricing (per person, small group):
+Add a new section to `src/pages/Home.tsx` (placed above Footer, below existing content):
+- Heading: "Proud Members & Partners"
+- Subtitle: short trust line
+- Responsive grid (4 cols desktop, 2 mobile) with grayscale → color hover, white card background, consistent logo height (~64px), proper alt text
 
-| Slug | Title | Duration | Price (USD) | Image (from gallery) |
-|---|---|---|---|---|
-| `hells-gate-naivasha-boat` | Hell's Gate NP & Lake Naivasha Boat Ride | 1 Day | 180 | rhino-waterhole.jpg |
-| `fairview-coffee-farm` | Fairview Coffee Farm Tour | 1 Day | 120 | elephant-grass.jpg (closest fit; or upload coffee shot later) |
-| `nairobi-park-orphanage-giraffe` | Nairobi NP, Elephant Orphanage & Giraffe Centre | 7 Hours | 195 | elephant-closeup-vehicle.jpg |
-| `nairobi-park-orphanage` | Nairobi NP & Elephant Orphanage | 5 Hours | 150 | wildebeest-herd-mara.jpg → switch to a buffalo/park shot from gallery |
+### 3. Files
+- DB: `UPDATE packages SET image=... WHERE slug=...` (4 rows)
+- Copy: 4 day-trip JPGs → `public/day-trips/`, 4 logos → `public/partners/`
+- Edit: `src/pages/Home.tsx` (add Partners section)
 
-Each gets: full summary, highlights, inclusions, exclusions, sort_order. Pricing benchmarked against Viator, Gracepatt ($225), Kenya Wild Parks ($150), Kitano, Powertraveller ($90) — set just under competitor average for competitiveness.
-
-**2. Switch all listing pages from static `tours.ts` → live `packages` table**
-- Refactor `Safaris.tsx`, `DayTrips.tsx`, `Combo.tsx`, `Cultural.tsx`, `Home.tsx` to fetch from Supabase (same pattern already used by `MegaMenu.tsx`)
-- Update `PackageCard.tsx` to accept the DB shape (`price_from`, `image`, `summary` instead of `priceFrom`, `shortDescription`)
-- `PackageDetail.tsx` already fetches from DB — no change needed
-- Keep `tours.ts` for fallback typing only (or delete usage)
-
-**3. Day Trips image mapping** — ensure each card uses the gallery image whose subject matches the destination (Nairobi park trips → buffalo/rhino shots, Naivasha → hippo/water shots, etc.). Done via the `image` column already set per row.
-
-### Out of scope
-- Uploading new coffee/giraffe-specific images (will reuse closest gallery match; user can swap via admin later)
-- Redesigning the card UI — the existing PackageCard styling stays
-
-### Files to change
-- DB: insert 4 rows into `packages`
-- Edit: `src/pages/Safaris.tsx`, `DayTrips.tsx`, `Combo.tsx`, `Cultural.tsx`, `Home.tsx`, `src/components/PackageCard.tsx`
-
+### Note
+Your message ends with "then" — looks cut off. I'll proceed with the two clear asks above; if there was a third part, send it and I'll add it.
