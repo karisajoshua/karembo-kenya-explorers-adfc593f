@@ -194,7 +194,7 @@ const Home = () => {
                         <Calendar className="h-3.5 w-3.5" />
                         <span>{t.duration}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-3">{t.shortDescription}</p>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-3">{t.summary}</p>
                       <Button asChild variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
                         <Link to={`/packages/${t.slug}`}>
                           Discover More <ArrowRight className="h-4 w-4" />
@@ -217,7 +217,7 @@ const Home = () => {
                     <Calendar className="h-4 w-4" />
                     <span>{safaris[2].duration}</span>
                   </div>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{safaris[2].shortDescription}</p>
+                  <p className="text-muted-foreground leading-relaxed mb-6">{safaris[2].summary}</p>
                   <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
                     <Link to={`/packages/${safaris[2].slug}`}>
                       Discover More <ArrowRight className="h-4 w-4" />
