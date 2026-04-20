@@ -5,9 +5,8 @@ import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/PageHero";
 import { SectionHeader } from "@/components/SectionHeader";
-import { PackageCard } from "@/components/PackageCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { byCategory } from "@/data/tours";
+import { usePackagesByCategory } from "@/hooks/usePackages";
 import { cn } from "@/lib/utils";
 import { Seo, orgJsonLd } from "@/components/Seo";
 
@@ -46,8 +45,10 @@ const testimonials = [
 ];
 
 const Home = () => {
-  const safaris = byCategory("safari").slice(0, 3);
-  const dayTrips = byCategory("day-trip").slice(0, 8);
+  const { items: safarisAll } = usePackagesByCategory("safari");
+  const { items: dayTripsAll } = usePackagesByCategory("day-trip");
+  const safaris = safarisAll.slice(0, 3);
+  const dayTrips = dayTripsAll.slice(0, 8);
   const autoplay = useRef(Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true }));
 
   return (
@@ -134,7 +135,7 @@ const Home = () => {
                         <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
                           <h3 className="font-serif text-xl mb-1 leading-tight">{t.title}</h3>
                           <p className="text-xs text-primary-foreground/85">
-                            From <span className="font-semibold text-accent">${t.priceFrom} pp</span>
+                            From <span className="font-semibold text-accent">${t.price_from} pp</span>
                           </p>
                         </div>
                       </div>
@@ -142,7 +143,7 @@ const Home = () => {
                       <div className="absolute inset-0 rounded-xl bg-secondary text-secondary-foreground p-6 flex flex-col justify-center text-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
                         <h3 className="font-serif text-xl mb-3 leading-tight">{t.title}</h3>
                         <p className="text-sm leading-relaxed mb-5 line-clamp-5 opacity-90">
-                          {t.shortDescription}
+                          {t.summary}
                         </p>
                         <Link
                           to={`/packages/${t.slug}`}
@@ -173,7 +174,7 @@ const Home = () => {
           <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-16">
             Our Popular Safari Packages
           </h2>
-          {safaris.length >= 3 && (
+          {safaris.length >= 3 ? (
             <div className="grid gap-6 md:grid-cols-2 md:auto-rows-fr">
               {/* Left column — 2 stacked horizontal cards */}
               {[safaris[0], safaris[1]].map((t, i) => {

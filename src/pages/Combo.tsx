@@ -1,12 +1,12 @@
 import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
-import { byCategory } from "@/data/tours";
+import { usePackagesByCategory } from "@/hooks/usePackages";
 import { Seo } from "@/components/Seo";
 
 const HERO = "/gallery/zebra-portrait.jpg";
 
 const Combo = () => {
-  const tours = byCategory("combo");
+  const { items: tours } = usePackagesByCategory("combo");
   return (
     <>
       <Seo
