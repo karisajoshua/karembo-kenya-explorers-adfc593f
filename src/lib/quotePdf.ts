@@ -28,55 +28,55 @@ export const generateQuotePdf = async (q: QuoteData) => {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const W = doc.internal.pageSize.getWidth();
   const M = 48;
-  const BAND_H = 110;
+  const BAND_H = 130;
 
   // Brand band
   doc.setFillColor(59, 36, 23); // #3b2417
   doc.rect(0, 0, W, BAND_H, "F");
 
-  // Logo
+  // Logo - larger and clearer
   try {
     const dataUrl = await loadLogoDataUrl();
-    const logoH = 80;
-    const logoW = 80;
+    const logoH = 100;
+    const logoW = 100;
     doc.addImage(dataUrl, "PNG", M, (BAND_H - logoH) / 2, logoW, logoH);
   } catch (e) {
     console.error("Logo load failed", e);
   }
 
-  const textX = M + 100;
+  const textX = M + 120;
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("KAREMBO TOURS & SAFARIS", textX, 50);
+  doc.setFontSize(22);
+  doc.text("KAREMBO TOURS & SAFARIS", textX, 55);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.text("Dream Your Next Trip — Safari Experiences Designed Around You", textX, 70);
-  doc.text("www.karembotours.co.ke", textX, 86);
+  doc.setFontSize(10);
+  doc.text("Dream Your Next Trip — Safari Experiences Designed Around You", textX, 78);
+  doc.text("www.karembotours.co.ke", textX, 96);
 
-  let y = 150;
+  let y = 170;
   doc.setTextColor(40, 40, 40);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
+  doc.setFontSize(18);
   doc.text("Quote Request Summary", M, y);
-  y += 8;
+  y += 10;
   doc.setDrawColor(200, 160, 60);
-  doc.setLineWidth(2);
-  doc.line(M, y, M + 80, y);
-  y += 28;
+  doc.setLineWidth(2.5);
+  doc.line(M, y, M + 100, y);
+  y += 32;
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(110, 110, 110);
   doc.text(`Submitted: ${new Date().toLocaleString("en-GB", { dateStyle: "long", timeStyle: "short" })}`, M, y);
-  y += 24;
+  y += 28;
 
   // Client section
-  doc.setFontSize(12);
+  doc.setFontSize(13);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(59, 36, 23);
   doc.text("YOUR DETAILS", M, y);
-  y += 18;
+  y += 22;
 
   const rows: [string, string][] = [
     ["Full name", q.name],
@@ -98,16 +98,16 @@ export const generateQuotePdf = async (q: QuoteData) => {
     doc.text(`${k}:`, M, y);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(40, 40, 40);
-    doc.text(String(v), M + 140, y);
-    y += 18;
+    doc.text(String(v), M + 160, y);
+    y += 20;
   });
 
   if (q.message) {
-    y += 12;
+    y += 14;
     doc.setFont("helvetica", "bold");
     doc.setTextColor(59, 36, 23);
     doc.text("YOUR MESSAGE", M, y);
-    y += 16;
+    y += 18;
     doc.setFont("helvetica", "normal");
     doc.setTextColor(40, 40, 40);
     const lines = doc.splitTextToSize(q.message, W - M * 2);
@@ -116,32 +116,32 @@ export const generateQuotePdf = async (q: QuoteData) => {
   }
 
   // What's next
-  y += 24;
+  y += 28;
   doc.setFillColor(248, 244, 232);
-  doc.rect(M, y - 6, W - M * 2, 70, "F");
+  doc.rect(M, y - 6, W - M * 2, 80, "F");
   doc.setFont("helvetica", "bold");
   doc.setTextColor(59, 36, 23);
-  doc.setFontSize(12);
-  doc.text("WHAT HAPPENS NEXT", M + 14, y + 14);
+  doc.setFontSize(13);
+  doc.text("WHAT HAPPENS NEXT", M + 14, y + 16);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setTextColor(60, 60, 60);
-  doc.text("Our team will review your request and reply within 24 hours with a", M + 14, y + 32);
-  doc.text("personalized itinerary, pricing breakdown, and answers to your questions.", M + 14, y + 46);
+  doc.text("Our team will review your request and reply within 24 hours with a", M + 14, y + 36);
+  doc.text("personalized itinerary, pricing breakdown, and answers to your questions.", M + 14, y + 52);
 
   // Footer
-  const fy = doc.internal.pageSize.getHeight() - 90;
+  const fy = doc.internal.pageSize.getHeight() - 100;
   doc.setFillColor(59, 36, 23);
-  doc.rect(0, fy, W, 90, "F");
+  doc.rect(0, fy, W, 100, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.text("CONTACT US", M, fy + 24);
+  doc.setFontSize(12);
+  doc.text("CONTACT US", M, fy + 28);
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.text("Phone: +254 722 736 130  |  +254 757 223 301", M, fy + 42);
-  doc.text("Email: info@karembotours.co.ke  |  reservations@karembotours.co.ke", M, fy + 56);
-  doc.text("11th Street Kangawa, Ngong Road, Nairobi, Kenya", M, fy + 70);
+  doc.setFontSize(10);
+  doc.text("Phone: +254 722 736 130  |  +254 757 223 301", M, fy + 48);
+  doc.text("Email: info@karembotours.co.ke  |  reservations@karembotours.co.ke", M, fy + 64);
+  doc.text("11th Street Kangawa, Ngong Road, Nairobi, Kenya", M, fy + 80);
 
   doc.save(`Karembo-Quote-${q.name.replace(/\s+/g, "-")}.pdf`);
 };
