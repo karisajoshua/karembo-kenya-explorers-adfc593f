@@ -1,68 +1,45 @@
 
-## Plan: Image integration, blog expansion, full SEO/AI optimization
 
-### 1. Map gallery images to packages and blogs
-- Pull all image URLs from `gallery_images` (already in storage)
-- Update `packages.image` for every Unsplash placeholder → matched safari/wildlife shot from gallery (e.g. Mara packages → wildebeest/lion shots; Amboseli → elephant-tusks; cultural → Maasai shots)
-- Update `blog_posts.cover_image` for each post → topical match from gallery
-- Inject 2-3 inline images into each blog post body (markdown `![alt](url)`)
+## Plan: Add new day-trip packages + switch pages to live DB data
 
-### 2. Expand all blog posts
-- Rewrite each post to ~1,200-1,800 words (currently most are <500)
-- Structure: intro → H2 sections → practical tips → FAQ block → CTA
-- Keyword-rich, natural prose targeting "Kenya safari", "Masai Mara tour", "Big Five", "wildebeest migration", etc.
-- Add `excerpt` (155 chars, meta-description ready) where missing
-- Done via SQL UPDATE on `blog_posts`
+### Findings
+1. **Day Trips page (and Safaris/Combo/Cultural/Home) still read from static `src/data/tours.ts`** — not the database. That's why earlier image/content updates didn't show on the front-end. The MegaMenu was switched to DB but the listing pages weren't.
+2. **Existing packages** already cover most of the screenshots, but with different naming/scope. Comparing screenshots → DB:
 
-### 3. SEO foundation (technical)
-- **react-helmet-async** for per-page `<title>`, meta description, canonical, OG, Twitter cards
-- Wrap `App.tsx` in `<HelmetProvider>`
-- Create `<Seo>` component used by every public page (Home, About, Safaris, DayTrips, Combo, Cultural, Gallery, Blog, BlogPost, PackageDetail, Contact)
-- Update `index.html`: improve default title, description, lang, theme-color, favicon meta, preconnect
+| Screenshot package | Status in DB |
+|---|---|
+| Hells Gate NP + Lake Naivasha boat ride | **MISSING** — add |
+| Fairview Coffee Farm Tour | **MISSING** — add |
+| Nairobi NP + Elephant Orphanage + Giraffe Centre | **MISSING** as combined trio — add (have separate ones) |
+| Nairobi NP + Elephant Orphanage | **MISSING** as pair — add |
+| Day Tour Nairobi National Park | exists as `nairobi-national-park` — keep |
 
-### 4. Structured data (JSON-LD) — critical for AI/Google
-Per-page schema injected via Helmet:
-- **Home**: `TravelAgency` + `Organization` + `WebSite` (with SearchAction)
-- **PackageDetail**: `TouristTrip` / `Product` with `offers`, `image`, `itinerary`
-- **BlogPost**: `BlogPosting` with author, datePublished, image, wordCount
-- **About**: `AboutPage` + `Organization`
-- **Contact**: `ContactPage` + `LocalBusiness` (Nairobi address, geo, phone, hours)
-- **Breadcrumbs** on detail pages
+### What I'll do
 
-### 5. Sitemap + robots
-- Generate `public/sitemap.xml` listing all static routes + every published package slug + blog slug (build-time script `scripts/generate-sitemap.mjs` run via `prebuild`, fetching slugs from Supabase using anon key)
-- Update `public/robots.txt` → add `Sitemap:` line, allow all good bots, explicitly allow `GPTBot`, `ClaudeBot`, `PerplexityBot`, `Google-Extended`, `CCBot` (AI discoverability)
+**1. Add 4 new day-trip packages to DB** with researched competitive Kenya market pricing (per person, small group):
 
-### 6. Image SEO
-- All `<img>` get descriptive `alt` (already partially there — extend to packages/blog covers)
-- `loading="lazy"` + `decoding="async"` on non-hero images
-- Width/height where known to reduce CLS
+| Slug | Title | Duration | Price (USD) | Image (from gallery) |
+|---|---|---|---|---|
+| `hells-gate-naivasha-boat` | Hell's Gate NP & Lake Naivasha Boat Ride | 1 Day | 180 | rhino-waterhole.jpg |
+| `fairview-coffee-farm` | Fairview Coffee Farm Tour | 1 Day | 120 | elephant-grass.jpg (closest fit; or upload coffee shot later) |
+| `nairobi-park-orphanage-giraffe` | Nairobi NP, Elephant Orphanage & Giraffe Centre | 7 Hours | 195 | elephant-closeup-vehicle.jpg |
+| `nairobi-park-orphanage` | Nairobi NP & Elephant Orphanage | 5 Hours | 150 | wildebeest-herd-mara.jpg → switch to a buffalo/park shot from gallery |
 
-### 7. Performance + crawlability
-- Add `<link rel="preconnect">` for Supabase storage in `index.html`
-- Ensure all internal links use `<Link>` (already true)
-- Add `og:image` per page (use the new gallery covers)
+Each gets: full summary, highlights, inclusions, exclusions, sort_order. Pricing benchmarked against Viator, Gracepatt ($225), Kenya Wild Parks ($150), Kitano, Powertraveller ($90) — set just under competitor average for competitiveness.
 
-### 8. AI-platform discoverability (`public/llms.txt`)
-- New file `public/llms.txt` (emerging standard) summarizing the site for LLMs: company, services, key URLs, contact
-- Verbose alt text + semantic HTML already supports AI parsing
+**2. Switch all listing pages from static `tours.ts` → live `packages` table**
+- Refactor `Safaris.tsx`, `DayTrips.tsx`, `Combo.tsx`, `Cultural.tsx`, `Home.tsx` to fetch from Supabase (same pattern already used by `MegaMenu.tsx`)
+- Update `PackageCard.tsx` to accept the DB shape (`price_from`, `image`, `summary` instead of `priceFrom`, `shortDescription`)
+- `PackageDetail.tsx` already fetches from DB — no change needed
+- Keep `tours.ts` for fallback typing only (or delete usage)
 
-### Files to add/change
-**New**
-- `src/components/Seo.tsx`
-- `scripts/generate-sitemap.mjs`
-- `public/llms.txt`
-- `public/sitemap.xml` (generated)
-
-**Edit**
-- `index.html` (meta, preconnect, lang)
-- `public/robots.txt` (sitemap + AI bots)
-- `package.json` (add `react-helmet-async`, `prebuild` script)
-- `src/App.tsx` (HelmetProvider)
-- All public page files → add `<Seo>` + JSON-LD
-- DB: bulk UPDATE `packages.image`, `blog_posts.cover_image`, `blog_posts.content`, `blog_posts.excerpt`
+**3. Day Trips image mapping** — ensure each card uses the gallery image whose subject matches the destination (Nairobi park trips → buffalo/rhino shots, Naivasha → hippo/water shots, etc.). Done via the `image` column already set per row.
 
 ### Out of scope
-- Multilingual SEO
-- Paid analytics / Search Console verification (user must add their own GSC token later — I'll leave a placeholder meta tag)
-- Image compression/CDN resizing
+- Uploading new coffee/giraffe-specific images (will reuse closest gallery match; user can swap via admin later)
+- Redesigning the card UI — the existing PackageCard styling stays
+
+### Files to change
+- DB: insert 4 rows into `packages`
+- Edit: `src/pages/Safaris.tsx`, `DayTrips.tsx`, `Combo.tsx`, `Cultural.tsx`, `Home.tsx`, `src/components/PackageCard.tsx`
+
