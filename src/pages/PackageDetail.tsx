@@ -282,7 +282,7 @@ const PackageDetail = () => {
             <h2 className="font-serif text-3xl text-primary mb-2">You might also like</h2>
             <p className="text-muted-foreground mb-8">More handpicked {pkg.category.replace("-", " ")} experiences.</p>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {related.map((r) => <PackageCard key={r.slug} item={r} />)}
+              {related.map((r) => <PackageCard key={r.slug} tour={r} />)}
             </div>
           </div>
         </section>

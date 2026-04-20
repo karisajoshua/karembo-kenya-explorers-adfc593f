@@ -29,6 +29,7 @@ import BlogPosts from "./pages/admin/BlogPosts";
 import BlogEdit from "./pages/admin/BlogEdit";
 import GalleryAdmin from "./pages/admin/Gallery";
 import SiteImages from "./pages/admin/SiteImages";
+import Leads from "./pages/admin/Leads";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: "quotes", element: <QuoteRequests /> },
+      { path: "leads", element: <Leads /> },
       { path: "packages", element: <Packages /> },
       { path: "packages/:id", element: <PackageEdit /> },
       { path: "blog", element: <BlogPosts /> },
