@@ -1,17 +1,17 @@
 import { PageHero } from "@/components/PageHero";
 import { PackageCard } from "@/components/PackageCard";
-import { byCategory } from "@/data/tours";
+import { usePackagesByCategory } from "@/hooks/usePackages";
 import { Seo } from "@/components/Seo";
 
 const HERO = "/gallery/elephant-closeup-vehicle.jpg";
 
 const DayTrips = () => {
-  const tours = byCategory("day-trip");
+  const { items: tours } = usePackagesByCategory("day-trip");
   return (
     <>
       <Seo
         title="Nairobi Day Trips & Excursions | Karembo Tours Kenya"
-        description="Half- and full-day Nairobi tours: National Park, Giraffe Centre, Sheldrick Elephant Orphanage, Karen Blixen, Bomas of Kenya and Mt. Longonot."
+        description="Half- and full-day Nairobi tours: National Park, Giraffe Centre, Sheldrick Elephant Orphanage, Karen Blixen, Hell's Gate, Lake Naivasha, Fairview Coffee Farm and more."
         path="/day-trips"
         image="/gallery/elephant-closeup-vehicle.jpg"
       />
