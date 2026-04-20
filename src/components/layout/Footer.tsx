@@ -74,7 +74,12 @@ export const Footer = () => (
     <div className="border-t border-foreground/10 bg-sand relative z-10">
       <div className="container-edge py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-foreground/60">
         <p>© {new Date().getFullYear()} Karembo Tour Safaris. All rights reserved.</p>
-        <p>Crafted with love in Nairobi.</p>
+        <p>
+          Powered by{" "}
+          <a href="https://texcortech.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent font-medium">
+            Texcortech Systems
+          </a>
+        </p>
       </div>
     </div>
   </footer>

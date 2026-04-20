@@ -80,6 +80,51 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          contacted: boolean
+          created_at: string
+          email: string
+          id: string
+          interested_category: string | null
+          interested_package: string | null
+          message: string | null
+          name: string
+          page_path: string | null
+          phone: string | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          contacted?: boolean
+          created_at?: string
+          email: string
+          id?: string
+          interested_category?: string | null
+          interested_package?: string | null
+          message?: string | null
+          name: string
+          page_path?: string | null
+          phone?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          contacted?: boolean
+          created_at?: string
+          email?: string
+          id?: string
+          interested_category?: string | null
+          interested_package?: string | null
+          message?: string | null
+          name?: string
+          page_path?: string | null
+          phone?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       packages: {
         Row: {
           category: string

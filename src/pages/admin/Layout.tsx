@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut } from "lucide-react";
+import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 const items = [
   { to: "/admin", end: true, icon: LayoutDashboard, label: "Dashboard" },
   { to: "/admin/quotes", icon: Mail, label: "Quote Requests" },
+  { to: "/admin/leads", icon: UserPlus, label: "Leads" },
   { to: "/admin/packages", icon: Package, label: "Packages" },
   { to: "/admin/blog", icon: FileText, label: "Blog Posts" },
   { to: "/admin/gallery", icon: Images, label: "Gallery" },
@@ -45,10 +46,16 @@ const AdminLayout = () => {
           </Button>
         </div>
       </aside>
-      <main className="flex-1 overflow-auto">
-        <div className="p-8 max-w-6xl mx-auto">
+      <main className="flex-1 overflow-auto flex flex-col">
+        <div className="p-8 max-w-6xl mx-auto w-full flex-1">
           <Outlet />
         </div>
+        <footer className="py-4 text-center text-xs text-muted-foreground border-t border-border">
+          Powered by{" "}
+          <a href="https://texcortech.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent font-medium">
+            Texcortech Systems
+          </a>
+        </footer>
       </main>
     </div>
   );
