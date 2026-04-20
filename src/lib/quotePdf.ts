@@ -34,17 +34,17 @@ export const generateQuotePdf = async (q: QuoteData) => {
   doc.setFillColor(59, 36, 23); // #3b2417
   doc.rect(0, 0, W, BAND_H, "F");
 
-  // Logo - larger and clearer
+  // Logo - landscape leopard mark
   try {
     const dataUrl = await loadLogoDataUrl();
-    const logoH = 100;
-    const logoW = 100;
-    doc.addImage(dataUrl, "PNG", M, (BAND_H - logoH) / 2, logoW, logoH);
+    const logoH = 90;
+    const logoW = 180;
+    doc.addImage(dataUrl, "PNG", M, (BAND_H - logoH) / 2, logoW, logoH, undefined, "FAST");
   } catch (e) {
     console.error("Logo load failed", e);
   }
 
-  const textX = M + 120;
+  const textX = M + 200;
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
