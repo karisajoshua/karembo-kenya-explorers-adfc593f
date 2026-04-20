@@ -293,16 +293,32 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Affiliates */}
-      <section className="py-12 border-t border-border">
+      {/* Partners */}
+      <section className="py-16 border-t border-border bg-background">
         <div className="container-edge">
-          <p className="text-center text-xs font-bold uppercase tracking-[0.25em] text-muted-foreground mb-8">
+          <h2 className="text-center font-serif text-2xl md:text-3xl text-primary mb-3">
             Proud Members & Partners
+          </h2>
+          <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-10">
+            Karembo Tours and Safaris is a trusted, accredited member of Kenya's leading tourism bodies.
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 text-primary/60">
-            {["KATO", "Magical Kenya", "Ecotourism Kenya", "Kenya Tourism Federation", "TripAdvisor"].map((a) => (
-              <div key={a} className="font-serif text-lg md:text-xl font-semibold tracking-wide">
-                {a}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 items-center max-w-5xl mx-auto">
+            {[
+              { src: "/partners/kato.png", alt: "KATO — Kenya Association of Tour Operators" },
+              { src: "/partners/magical-kenya.jpg", alt: "Magical Kenya — Kenya Tourism Board" },
+              { src: "/partners/tourism-regulatory.png", alt: "Tourism Regulatory Authority of Kenya" },
+              { src: "/partners/tripadvisor.png", alt: "TripAdvisor" },
+            ].map((p) => (
+              <div
+                key={p.src}
+                className="bg-background rounded-lg p-4 flex items-center justify-center h-24 transition-all duration-300 grayscale hover:grayscale-0 hover:shadow-card"
+              >
+                <img
+                  src={p.src}
+                  alt={p.alt}
+                  loading="lazy"
+                  className="max-h-16 w-auto object-contain"
+                />
               </div>
             ))}
           </div>
