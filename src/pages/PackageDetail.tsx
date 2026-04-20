@@ -7,6 +7,7 @@ import { Seo } from "@/components/Seo";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { PackageCard, type PackageCardItem } from "@/components/PackageCard";
+import { ParkFeesTable } from "@/components/ParkFeesTable";
 import { supabase } from "@/integrations/supabase/client";
 
 type ItineraryDay = { day?: string; title?: string; details?: string };
@@ -211,6 +212,9 @@ const PackageDetail = () => {
                 </ul>
               </div>
             </div>
+
+            {/* Park fees */}
+            <ParkFeesTable context={[pkg.title, pkg.summary, ...(pkg.highlights ?? [])]} />
 
             {/* What to pack */}
             <Collapsible>

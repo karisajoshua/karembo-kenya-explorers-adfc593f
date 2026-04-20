@@ -47,7 +47,9 @@ const testimonials = [
 const Home = () => {
   const { items: safarisAll } = usePackagesByCategory("safari");
   const { items: dayTripsAll } = usePackagesByCategory("day-trip");
-  const safaris = safarisAll.slice(0, 3);
+  // Featured "Popular Packages" — Nairobi day-trips first, then top safaris
+  const nairobiFeatured = dayTripsAll.filter((d) => /nairobi/i.test(d.title)).slice(0, 4);
+  const safaris = [...nairobiFeatured, ...safarisAll].slice(0, 3);
   const dayTrips = dayTripsAll.slice(0, 8);
   const autoplay = useRef(Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true }));
 
