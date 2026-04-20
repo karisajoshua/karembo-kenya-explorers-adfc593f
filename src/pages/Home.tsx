@@ -226,7 +226,7 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          )}
+          ) : null}
           <div className="text-center mt-16">
             <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
               <Link to="/safaris">Explore More Packages</Link>
