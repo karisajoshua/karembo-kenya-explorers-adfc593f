@@ -52,25 +52,19 @@ export const generateQuotePdf = async (q: QuoteData) => {
   const H = doc.internal.pageSize.getHeight();
   const M = 48;
 
-  // ─── HEADER BAND ────────────────────────────────────────────────────────────
+  // ─── HEADER (white background so the logo reads clearly) ──────────────────
   const HEADER_H = 150;
-  setFill(doc, BRAND.primary);
-  doc.rect(0, 0, W, HEADER_H, "F");
-
-  // Gold underline accent
+  // Gold underline accent at the bottom of the header
   setFill(doc, BRAND.accent);
   doc.rect(0, HEADER_H, W, 4, "F");
 
   // Logo — preserve aspect ratio, render at high fidelity
-  let logoBottom = M + 80;
   try {
     const { dataUrl, w, h } = await loadLogo();
-    const targetW = 170;
+    const targetW = 190;
     const targetH = (h / w) * targetW;
     const logoY = (HEADER_H - targetH) / 2;
-    // SLOW = better quality; explicit aliasing off via PNG
     doc.addImage(dataUrl, "PNG", M, logoY, targetW, targetH, "karembo-logo", "SLOW");
-    logoBottom = logoY + targetH;
   } catch (e) {
     console.error("Logo load failed", e);
   }
@@ -78,20 +72,21 @@ export const generateQuotePdf = async (q: QuoteData) => {
   // Right-side header meta (date + ref)
   const ref = `KT-${Date.now().toString().slice(-8)}`;
   const dateStr = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
-  setText(doc, [255, 255, 255]);
+  setText(doc, BRAND.muted);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text("QUOTE REFERENCE", W - M, 50, { align: "right" });
   doc.setFont("helvetica", "bold");
   doc.setFontSize(13);
-  setText(doc, BRAND.accent);
+  setText(doc, BRAND.primary);
   doc.text(ref, W - M, 68, { align: "right" });
-  setText(doc, [255, 255, 255]);
+  setText(doc, BRAND.muted);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.text(dateStr, W - M, 86, { align: "right" });
+  setText(doc, BRAND.accent);
   doc.setFontSize(8);
-  doc.setTextColor(220, 210, 195);
+  doc.setFont("helvetica", "bold");
   doc.text("www.karembotours.co.ke", W - M, 110, { align: "right" });
 
   // ─── TITLE ──────────────────────────────────────────────────────────────────
