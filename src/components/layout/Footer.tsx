@@ -46,7 +46,6 @@ export const Footer = () => (
       <div>
         <h4 className="font-serif text-lg mb-4 text-primary">Affiliations</h4>
         <ul className="space-y-2 text-sm text-foreground/75">
-          <li>Kenya Association of Tour Operators</li>
           <li>Magical Kenya</li>
           <li>Ecotourism Kenya</li>
           <li>Kenya Tourism Federation</li>
