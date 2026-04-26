@@ -51,3 +51,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://karembotours.co.ke/sitemap.xml
+Sitemap: https://vtbjqogssvwpfqtwxyeo.supabase.co/functions/v1/sitemap
