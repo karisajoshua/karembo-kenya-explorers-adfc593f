@@ -67,11 +67,23 @@ const Home = () => {
             "@type": "WebSite",
             url: "https://karembotours.co.ke",
             name: "Karembo Tours and Safaris",
+            inLanguage: "en",
             potentialAction: {
               "@type": "SearchAction",
               target: "https://karembotours.co.ke/safaris?q={search_term_string}",
               "query-input": "required name=search_term_string",
             },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              { "@type": "Question", name: "When is the best time to visit the Masai Mara?", acceptedAnswer: { "@type": "Answer", text: "The Great Migration peaks in the Masai Mara from July to October, with dramatic Mara River crossings. January–March offers excellent resident game viewing with fewer crowds and lush landscapes after short rains." } },
+              { "@type": "Question", name: "How much does a Kenyan safari cost?", acceptedAnswer: { "@type": "Answer", text: "Karembo safaris start from around $450 per person for a 3-day Masai Mara classic and scale up to $2,800+ per person for 8-day luxury honeymoon trips. All park fees, 4x4 transport and accommodation are included — no hidden surcharges." } },
+              { "@type": "Question", name: "Do I need a visa to visit Kenya?", acceptedAnswer: { "@type": "Answer", text: "Most international travellers need an electronic Travel Authorization (eTA) before arrival, applied for online at etakenya.go.ke. EAC citizens are exempt. Your passport must be valid for 6+ months." } },
+              { "@type": "Question", name: "Is Kenya safe for tourists?", acceptedAnswer: { "@type": "Answer", text: "Yes. Kenya is a safe and welcoming destination. Karembo uses experienced licensed driver-guides, well-maintained 4x4 vehicles and only partners with vetted accommodations across all parks." } },
+              { "@type": "Question", name: "Can I combine a safari with the Kenyan coast?", acceptedAnswer: { "@type": "Answer", text: "Absolutely. We offer popular bush-and-beach combos pairing the Masai Mara or Amboseli with Diani, Watamu or Lamu — typically 7 to 12 days, with internal flights." } },
+            ],
           },
         ]}
       />
