@@ -30,10 +30,19 @@ type PkgRow = {
   exclusions: string[] | null;
 };
 
-const ADDONS = [
-  { id: "airport_transfer", label: "Airport transfer (one way)", price: 40 },
-  { id: "single_supp", label: "Single-room supplement (+15% on base)", price: 0, percent: 0.15 },
-] as const;
+type Addon =
+  | { id: string; label: string; kind: "perPerson"; price: number }
+  | { id: string; label: string; kind: "flat"; price: number }
+  | { id: string; label: string; kind: "percent"; percent: number }
+  | { id: string; label: string; kind: "adultChild"; adult: number; child: number };
+
+const ADDONS: Addon[] = [
+  { id: "joining_transport", label: "Joining Nairobi tours transport", kind: "perPerson", price: 40 },
+  { id: "private_transport", label: "Private tour transport (per vehicle)", kind: "flat", price: 200 },
+  { id: "elephant_orphanage", label: "Elephant Orphanage entry", kind: "adultChild", adult: 20, child: 10 },
+  { id: "airport_transfer", label: "Airport transfer (one way)", kind: "perPerson", price: 40 },
+  { id: "single_supp", label: "Single-room supplement (+15% on base)", kind: "percent", percent: 0.15 },
+];
 
 const schema = z.object({
   name: z.string().trim().min(2, "Please enter your full name").max(100),
