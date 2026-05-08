@@ -13,6 +13,7 @@ export type ClientQuoteData = {
   days?: number;
   adults: number;
   children: number;
+  residency?: string;
   lines: QuoteLine[];     // already computed
   notes?: string;
   inclusions?: string[];
