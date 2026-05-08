@@ -40,7 +40,7 @@ export const Header = () => {
 
         <div className="hidden lg:block">
           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
-            <Link to="/contact">Request a Quote</Link>
+            <Link to="/quote">Get a Quote</Link>
           </Button>
         </div>
 
@@ -72,7 +72,7 @@ export const Header = () => {
               </NavLink>
             ))}
             <Button asChild className="mt-3 bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/contact" onClick={() => setOpen(false)}>Request a Quote</Link>
+              <Link to="/quote" onClick={() => setOpen(false)}>Get a Quote</Link>
             </Button>
           </div>
         </div>

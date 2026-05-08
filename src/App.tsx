@@ -13,6 +13,7 @@ import Combo from "./pages/Combo";
 import Cultural from "./pages/Cultural";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Quote from "./pages/Quote";
 import PackageDetail from "./pages/PackageDetail";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
       { path: "/cultural", element: <Cultural /> },
       { path: "/about", element: <About /> },
       { path: "/contact", element: <Contact /> },
+      { path: "/quote", element: <Quote /> },
       { path: "/blog", element: <Blog /> },
       { path: "/blog/:slug", element: <BlogPost /> },
       { path: "/gallery", element: <Gallery /> },
