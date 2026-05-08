@@ -13,6 +13,7 @@ export type ClientQuoteData = {
   days?: number;
   adults: number;
   children: number;
+  residency?: string;
   lines: QuoteLine[];     // already computed
   notes?: string;
   inclusions?: string[];
@@ -86,6 +87,7 @@ export const generateClientQuotePdf = async (q: ClientQuoteData) => {
     q.travelDate ? `Travel: ${q.travelDate}` : "",
     q.days ? `${q.days} day${q.days > 1 ? "s" : ""}` : "",
     `${q.adults} adult${q.adults !== 1 ? "s" : ""}${q.children > 0 ? ` + ${q.children} child${q.children > 1 ? "ren" : ""}` : ""}`,
+    q.residency ? `Residency: ${q.residency}` : "",
   ].filter(Boolean).join("  ·  ");
   doc.text(meta, W / 2 + 10, ty);
 
