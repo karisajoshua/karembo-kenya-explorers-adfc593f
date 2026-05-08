@@ -30,10 +30,19 @@ type PkgRow = {
   exclusions: string[] | null;
 };
 
-const ADDONS = [
-  { id: "airport_transfer", label: "Airport transfer (one way)", price: 40 },
-  { id: "single_supp", label: "Single-room supplement (+15% on base)", price: 0, percent: 0.15 },
-] as const;
+type Addon =
+  | { id: string; label: string; kind: "perPerson"; price: number }
+  | { id: string; label: string; kind: "flat"; price: number }
+  | { id: string; label: string; kind: "percent"; percent: number }
+  | { id: string; label: string; kind: "adultChild"; adult: number; child: number };
+
+const ADDONS: Addon[] = [
+  { id: "joining_transport", label: "Joining Nairobi tours transport", kind: "perPerson", price: 40 },
+  { id: "private_transport", label: "Private tour transport (per vehicle)", kind: "flat", price: 200 },
+  { id: "elephant_orphanage", label: "Elephant Orphanage entry", kind: "adultChild", adult: 20, child: 10 },
+  { id: "airport_transfer", label: "Airport transfer (one way)", kind: "perPerson", price: 40 },
+  { id: "single_supp", label: "Single-room supplement (+15% on base)", kind: "percent", percent: 0.15 },
+];
 
 const schema = z.object({
   name: z.string().trim().min(2, "Please enter your full name").max(100),
@@ -114,14 +123,27 @@ const Quote = () => {
     let addonsTotal = 0;
     ADDONS.forEach((a) => {
       if (!addons[a.id]) return;
-      if ("percent" in a && a.percent) {
+      if (a.kind === "percent") {
         const amt = +(adultsTotal * a.percent).toFixed(2);
         addonsTotal += amt;
         lines.push({ description: a.label, pax: 1, rate: amt });
-      } else if (a.price) {
-        const amt = a.price * Math.max(adults + children, 1);
-        addonsTotal += amt;
-        lines.push({ description: `${a.label} (per person)`, pax: adults + children, rate: a.price });
+      } else if (a.kind === "perPerson") {
+        const pax = adults + children;
+        if (pax < 1) return;
+        addonsTotal += a.price * pax;
+        lines.push({ description: `${a.label} (per person)`, pax, rate: a.price });
+      } else if (a.kind === "flat") {
+        addonsTotal += a.price;
+        lines.push({ description: a.label, pax: 1, rate: a.price });
+      } else if (a.kind === "adultChild") {
+        if (adults > 0) {
+          addonsTotal += a.adult * adults;
+          lines.push({ description: `${a.label} — Adult`, pax: adults, rate: a.adult });
+        }
+        if (children > 0) {
+          addonsTotal += a.child * children;
+          lines.push({ description: `${a.label} — Child`, pax: children, rate: a.child });
+        }
       }
     });
     const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal;
@@ -331,7 +353,10 @@ const Quote = () => {
                     <Checkbox checked={!!addons[a.id]} onCheckedChange={(v) => setAddons((s) => ({ ...s, [a.id]: !!v }))} />
                     <span className="text-sm flex-1">{a.label}</span>
                     <span className="text-sm font-semibold text-secondary">
-                      {"percent" in a && a.percent ? `+${Math.round(a.percent * 100)}%` : `+$${a.price}/pp`}
+                      {a.kind === "percent" ? `+${Math.round(a.percent * 100)}%`
+                        : a.kind === "perPerson" ? `+$${a.price}/pp`
+                        : a.kind === "flat" ? `+$${a.price} flat`
+                        : `+$${a.adult} adult / $${a.child} child`}
                     </span>
                   </label>
                 ))}
