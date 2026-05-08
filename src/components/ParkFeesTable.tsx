@@ -1,10 +1,12 @@
 import { Info } from "lucide-react";
-import { matchParks } from "@/data/parkFees";
+import { matchParks, RESIDENCY_LABELS, formatRate, type Residency } from "@/data/parkFees";
 
 type Props = {
   /** Strings searched for park keywords — typically [title, ...highlights, summary] */
   context: string[];
 };
+
+const COLS: Residency[] = ["ea_citizen", "resident", "non_resident", "african_citizen"];
 
 export const ParkFeesTable = ({ context }: Props) => {
   const parks = matchParks(context);
@@ -15,7 +17,7 @@ export const ParkFeesTable = ({ context }: Props) => {
       <h2 className="font-serif text-3xl text-primary mb-2">Park entry fees</h2>
       <p className="text-sm text-muted-foreground mb-5 flex items-start gap-2">
         <Info className="h-4 w-4 text-accent mt-0.5 shrink-0" />
-        Reference rates per person, per day. Non-resident fees are already included in this package; resident & citizen rates require valid ID at the gate.
+        Reference rates per person, per day in USD. Non-resident fees are typically included in this package; resident, EA citizen and African citizen rates require valid ID at the gate.
       </p>
 
       <div className="space-y-6">
@@ -25,22 +27,28 @@ export const ParkFeesTable = ({ context }: Props) => {
               {p.name}
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm min-w-[640px]">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wider text-muted-foreground border-b border-border">
                     <th className="px-5 py-3 font-semibold">Category</th>
-                    <th className="px-5 py-3 font-semibold">Adult</th>
-                    <th className="px-5 py-3 font-semibold">Child</th>
+                    {COLS.map((c) => (
+                      <th key={c} className="px-5 py-3 font-semibold">{RESIDENCY_LABELS[c]}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {p.rows.map((r) => (
-                    <tr key={r.category} className="border-b border-border/60 last:border-0">
-                      <td className="px-5 py-3 font-medium text-primary">{r.category}</td>
-                      <td className="px-5 py-3 text-foreground/80">{r.adult}</td>
-                      <td className="px-5 py-3 text-foreground/80">{r.child}</td>
-                    </tr>
-                  ))}
+                  <tr className="border-b border-border/60">
+                    <td className="px-5 py-3 font-medium text-primary">Adult</td>
+                    {COLS.map((c) => (
+                      <td key={c} className="px-5 py-3 text-foreground/80">{formatRate(p.rates[c].adult)}</td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td className="px-5 py-3 font-medium text-primary">Child</td>
+                    {COLS.map((c) => (
+                      <td key={c} className="px-5 py-3 text-foreground/80">{formatRate(p.rates[c].child)}</td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>
