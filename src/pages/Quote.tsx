@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { CalendarIcon, Download, Sparkles } from "lucide-react";
+import { CalendarIcon, Download, Sparkles, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,10 +11,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { PageHero } from "@/components/PageHero";
 import { Seo } from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
 import { generateClientQuotePdf, type QuoteLine } from "@/lib/clientQuotePdf";
+import { PARK_FEES, RESIDENCY_LABELS, type Residency } from "@/data/parkFees";
 import { cn } from "@/lib/utils";
 
 const HERO = "/gallery/wildebeest-crossing.jpg";
@@ -40,6 +42,8 @@ const schema = z.object({
   country: z.string().trim().max(80).optional().or(z.literal("")),
 });
 
+type ParkSel = { name: string; adults: number; children: number };
+
 const Quote = () => {
   const [params] = useSearchParams();
   const preselect = params.get("package") ?? "";
@@ -48,6 +52,9 @@ const Quote = () => {
   const [pkgSlug, setPkgSlug] = useState(preselect);
   const [adults, setAdults] = useState(2);
   const [children, setChildren] = useState(0);
+  const [residency, setResidency] = useState<Residency>("non_resident");
+  const [parkSel, setParkSel] = useState<ParkSel[]>([]);
+  const [parkPicker, setParkPicker] = useState("");
   const [travelDate, setTravelDate] = useState<Date | undefined>();
   const [days, setDays] = useState<number | "">("");
   const [addons, setAddons] = useState<Record<string, boolean>>({});
@@ -65,6 +72,16 @@ const Quote = () => {
 
   const selectedPkg = useMemo(() => packages.find((p) => p.slug === pkgSlug), [packages, pkgSlug]);
 
+  const addPark = (name: string) => {
+    if (!name) return;
+    if (parkSel.some((p) => p.name === name)) return;
+    setParkSel((s) => [...s, { name, adults, children }]);
+    setParkPicker("");
+  };
+  const removePark = (name: string) => setParkSel((s) => s.filter((p) => p.name !== name));
+  const updatePark = (name: string, key: "adults" | "children", v: number) =>
+    setParkSel((s) => s.map((p) => (p.name === name ? { ...p, [key]: Math.max(0, v) } : p)));
+
   const computation = useMemo(() => {
     const baseRate = selectedPkg?.price_from ?? 0;
     const adultsTotal = baseRate * adults;
@@ -74,6 +91,26 @@ const Quote = () => {
       if (adults > 0) lines.push({ description: `${selectedPkg.title} — Adult`, pax: adults, rate: baseRate });
       if (children > 0) lines.push({ description: `${selectedPkg.title} — Child (under 12, 30% off)`, pax: children, rate: +(baseRate * 0.7).toFixed(2) });
     }
+
+    // Park fees
+    let parkFeesTotal = 0;
+    parkSel.forEach((sel) => {
+      const fee = PARK_FEES.find((p) => p.name === sel.name);
+      if (!fee) return;
+      const ar = fee.rates[residency].adult;
+      const cr = fee.rates[residency].child;
+      if (sel.adults > 0) {
+        const amt = +(ar * sel.adults).toFixed(2);
+        parkFeesTotal += amt;
+        lines.push({ description: `${sel.name} — Adult entry (${RESIDENCY_LABELS[residency]})`, pax: sel.adults, rate: ar });
+      }
+      if (sel.children > 0) {
+        const amt = +(cr * sel.children).toFixed(2);
+        parkFeesTotal += amt;
+        lines.push({ description: `${sel.name} — Child entry (${RESIDENCY_LABELS[residency]})`, pax: sel.children, rate: cr });
+      }
+    });
+
     let addonsTotal = 0;
     ADDONS.forEach((a) => {
       if (!addons[a.id]) return;
@@ -87,9 +124,9 @@ const Quote = () => {
         lines.push({ description: `${a.label} (per person)`, pax: adults + children, rate: a.price });
       }
     });
-    const total = adultsTotal + childrenTotal + addonsTotal;
-    return { lines, total };
-  }, [selectedPkg, adults, children, addons]);
+    const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal;
+    return { lines, total, parkFeesTotal };
+  }, [selectedPkg, adults, children, addons, parkSel, residency]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,13 +137,13 @@ const Quote = () => {
 
     setSubmitting(true);
     const travelStr = travelDate ? format(travelDate, "PPP") : undefined;
-    const summary = `Self-quote estimate: USD ${computation.total.toFixed(2)} | ${selectedPkg.title} | ${adults} adults${children ? ` + ${children} children` : ""}${days ? ` | ${days} days` : ""}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
+    const summary = `Self-quote: USD ${computation.total.toFixed(2)} | ${selectedPkg.title} | ${adults}A+${children}C | Residency: ${RESIDENCY_LABELS[residency]}${parkSel.length ? ` | Parks: ${parkSel.map((p) => `${p.name} (${p.adults}A/${p.children}C)`).join("; ")}` : ""}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
 
     await supabase.from("quote_requests").insert([{
       name: form.name, email: form.email,
       phone: form.phone || null, country: form.country || null,
       travel_dates: travelStr ?? null,
-      group_size: `${adults} adults${children ? ` + ${children} children` : ""}`,
+      group_size: `${adults} adults${children ? ` + ${children} children` : ""} (${RESIDENCY_LABELS[residency]})`,
       package_interest: selectedPkg.title,
       budget: `USD ${computation.total.toFixed(2)} (estimate)`,
       message: summary,
@@ -122,6 +159,7 @@ const Quote = () => {
         travelDate: travelStr,
         days: typeof days === "number" ? days : undefined,
         adults, children,
+        residency: RESIDENCY_LABELS[residency],
         lines: computation.lines,
         notes: form.notes,
         inclusions: selectedPkg.inclusions ?? [],
@@ -135,18 +173,20 @@ const Quote = () => {
     setSubmitting(false);
   };
 
+  const availableParks = PARK_FEES.filter((p) => !parkSel.some((s) => s.name === p.name));
+
   return (
     <>
       <Seo
         title="Build Your Kenya Safari Quote — Karembo Tours"
-        description="Get an instant Kenya safari quote. Pick a package, choose dates and group size, and download a branded PDF quote in seconds."
+        description="Get an instant Kenya safari quote. Pick a package, choose dates, group size and park entry fees, then download a branded PDF quote in seconds."
         path="/quote"
       />
       <PageHero
         image={HERO}
         eyebrow="Instant pricing"
         title="Build Your Quote"
-        subtitle="Choose a package, tell us your group size, and download a branded quote PDF instantly."
+        subtitle="Choose a package, tell us your group size, add park entries — download a branded quote PDF instantly."
       />
 
       <section className="py-16">
@@ -204,6 +244,83 @@ const Quote = () => {
                   placeholder="Leave blank for package default"
                   onChange={(e) => setDays(e.target.value === "" ? "" : Math.max(1, Math.min(30, Number(e.target.value))))} />
               </div>
+            </div>
+
+            {/* Residency */}
+            <div>
+              <Label className="mb-2 block">Residency *</Label>
+              <RadioGroup
+                value={residency}
+                onValueChange={(v) => setResidency(v as Residency)}
+                className="grid sm:grid-cols-2 gap-2"
+              >
+                {(Object.keys(RESIDENCY_LABELS) as Residency[]).map((r) => (
+                  <label key={r} className={cn(
+                    "flex items-center gap-3 p-3 rounded-md border cursor-pointer transition",
+                    residency === r ? "border-accent bg-sand" : "border-border hover:bg-sand/60"
+                  )}>
+                    <RadioGroupItem value={r} />
+                    <span className="text-sm">{RESIDENCY_LABELS[r]}</span>
+                  </label>
+                ))}
+              </RadioGroup>
+              <p className="text-[11px] text-muted-foreground mt-1">Park gate fees vary by residency. ID required at the gate for non Non-Resident rates.</p>
+            </div>
+
+            {/* Park entries */}
+            <div>
+              <Label className="mb-2 block">Park entry fees (optional)</Label>
+              <div className="flex gap-2">
+                <select
+                  value={parkPicker}
+                  onChange={(e) => setParkPicker(e.target.value)}
+                  className="flex h-10 flex-1 rounded-md border border-input bg-background px-3 text-sm"
+                >
+                  <option value="">— Add a park or reserve —</option>
+                  {availableParks.map((p) => (
+                    <option key={p.name} value={p.name}>{p.name}</option>
+                  ))}
+                </select>
+                <Button type="button" variant="outline" onClick={() => addPark(parkPicker)} disabled={!parkPicker}>
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
+              </div>
+
+              {parkSel.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {parkSel.map((sel) => {
+                    const fee = PARK_FEES.find((p) => p.name === sel.name)!;
+                    const ar = fee.rates[residency].adult;
+                    const cr = fee.rates[residency].child;
+                    const sub = ar * sel.adults + cr * sel.children;
+                    return (
+                      <div key={sel.name} className="rounded-md border border-border p-3 bg-sand/40">
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <p className="text-sm font-semibold text-primary">{sel.name}</p>
+                          <button type="button" onClick={() => removePark(sel.name)} className="text-muted-foreground hover:text-destructive">
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 items-end">
+                          <div>
+                            <Label className="text-xs">Adults @ ${ar.toFixed(2)}</Label>
+                            <Input type="number" min={0} max={50} value={sel.adults}
+                              onChange={(e) => updatePark(sel.name, "adults", Number(e.target.value) || 0)} />
+                          </div>
+                          <div>
+                            <Label className="text-xs">Children @ ${cr.toFixed(2)}</Label>
+                            <Input type="number" min={0} max={50} value={sel.children}
+                              onChange={(e) => updatePark(sel.name, "children", Number(e.target.value) || 0)} />
+                          </div>
+                          <div className="text-right text-sm font-semibold text-secondary">
+                            ${sub.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div>
@@ -264,7 +381,8 @@ const Quote = () => {
               {selectedPkg ? (
                 <>
                   <p className="font-serif text-lg leading-snug">{selectedPkg.title}</p>
-                  <div className="space-y-2 text-sm border-y border-white/15 py-3">
+                  <p className="text-xs text-white/60">Residency: {RESIDENCY_LABELS[residency]}</p>
+                  <div className="space-y-2 text-sm border-y border-white/15 py-3 max-h-72 overflow-y-auto">
                     {computation.lines.map((l, i) => (
                       <div key={i} className="flex justify-between gap-3">
                         <span className="text-white/80 truncate">{l.description}</span>
@@ -282,7 +400,7 @@ const Quote = () => {
               )}
 
               <p className="text-[11px] text-white/60 leading-relaxed">
-                Estimate based on standard package rates. Park entry fees may apply where not listed. A travel designer will confirm exact pricing within 24 hours.
+                Estimate based on standard package and KWS rates. A travel designer will confirm exact pricing within 24 hours.
               </p>
 
               <Link to="/contact" className="block text-center text-xs text-accent hover:underline">
