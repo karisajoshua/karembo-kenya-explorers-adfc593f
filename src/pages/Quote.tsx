@@ -123,14 +123,27 @@ const Quote = () => {
     let addonsTotal = 0;
     ADDONS.forEach((a) => {
       if (!addons[a.id]) return;
-      if ("percent" in a && a.percent) {
+      if (a.kind === "percent") {
         const amt = +(adultsTotal * a.percent).toFixed(2);
         addonsTotal += amt;
         lines.push({ description: a.label, pax: 1, rate: amt });
-      } else if (a.price) {
-        const amt = a.price * Math.max(adults + children, 1);
-        addonsTotal += amt;
-        lines.push({ description: `${a.label} (per person)`, pax: adults + children, rate: a.price });
+      } else if (a.kind === "perPerson") {
+        const pax = adults + children;
+        if (pax < 1) return;
+        addonsTotal += a.price * pax;
+        lines.push({ description: `${a.label} (per person)`, pax, rate: a.price });
+      } else if (a.kind === "flat") {
+        addonsTotal += a.price;
+        lines.push({ description: a.label, pax: 1, rate: a.price });
+      } else if (a.kind === "adultChild") {
+        if (adults > 0) {
+          addonsTotal += a.adult * adults;
+          lines.push({ description: `${a.label} — Adult`, pax: adults, rate: a.adult });
+        }
+        if (children > 0) {
+          addonsTotal += a.child * children;
+          lines.push({ description: `${a.label} — Child`, pax: children, rate: a.child });
+        }
       }
     });
     const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal;
