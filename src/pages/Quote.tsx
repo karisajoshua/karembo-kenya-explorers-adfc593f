@@ -353,7 +353,10 @@ const Quote = () => {
                     <Checkbox checked={!!addons[a.id]} onCheckedChange={(v) => setAddons((s) => ({ ...s, [a.id]: !!v }))} />
                     <span className="text-sm flex-1">{a.label}</span>
                     <span className="text-sm font-semibold text-secondary">
-                      {"percent" in a && a.percent ? `+${Math.round(a.percent * 100)}%` : `+$${a.price}/pp`}
+                      {a.kind === "percent" ? `+${Math.round(a.percent * 100)}%`
+                        : a.kind === "perPerson" ? `+$${a.price}/pp`
+                        : a.kind === "flat" ? `+$${a.price} flat`
+                        : `+$${a.adult} adult / $${a.child} child`}
                     </span>
                   </label>
                 ))}
