@@ -82,6 +82,7 @@ const Quote = () => {
   const [travelDate, setTravelDate] = useState<Date | undefined>();
   const [days, setDays] = useState<number | "">("");
   const [addons, setAddons] = useState<Record<string, boolean>>({});
+  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
   const [form, setForm] = useState({ name: "", email: "", phone: "", country: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
 
