@@ -193,19 +193,26 @@ const Quote = () => {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message ?? "Check the form"); return; }
-    if (!selectedPkg) { toast.error("Please choose a package"); return; }
     if (adults < 1) { toast.error("At least 1 adult required"); return; }
+    if (!selectedPkg && customItems.length === 0 && parkSel.length === 0) {
+      toast.error("Pick a package or add at least one custom destination/transport");
+      return;
+    }
 
     setSubmitting(true);
     const travelStr = travelDate ? format(travelDate, "PPP") : undefined;
-    const summary = `Self-quote: USD ${computation.total.toFixed(2)} | ${selectedPkg.title} | ${adults}A+${children}C | Residency: ${RESIDENCY_LABELS[residency]}${parkSel.length ? ` | Parks: ${parkSel.map((p) => `${p.name} (${p.adults}A/${p.children}C)`).join("; ")}` : ""}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
+    const tripTitle = selectedPkg?.title ?? "Custom Kenya Trip";
+    const customSummary = customItems.length
+      ? ` | Custom: ${customItems.map((c) => `${c.kind}:${c.label}(${c.mode === "flat" ? `$${c.flat} flat` : `$${c.adult}A/$${c.child}C × ${c.adults}A/${c.children}C`})`).join("; ")}`
+      : "";
+    const summary = `Self-quote: USD ${computation.total.toFixed(2)} | ${tripTitle} | ${adults}A+${children}C | Residency: ${RESIDENCY_LABELS[residency]}${parkSel.length ? ` | Parks: ${parkSel.map((p) => `${p.name} (${p.adults}A/${p.children}C)`).join("; ")}` : ""}${customSummary}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
 
     await supabase.from("quote_requests").insert([{
       name: form.name, email: form.email,
       phone: form.phone || null, country: form.country || null,
       travel_dates: travelStr ?? null,
       group_size: `${adults} adults${children ? ` + ${children} children` : ""} (${RESIDENCY_LABELS[residency]})`,
-      package_interest: selectedPkg.title,
+      package_interest: tripTitle,
       budget: `USD ${computation.total.toFixed(2)} (estimate)`,
       message: summary,
     }]);
@@ -216,15 +223,15 @@ const Quote = () => {
         email: form.email,
         phone: form.phone,
         country: form.country,
-        packageTitle: selectedPkg.title,
+        packageTitle: tripTitle,
         travelDate: travelStr,
         days: typeof days === "number" ? days : undefined,
         adults, children,
         residency: RESIDENCY_LABELS[residency],
         lines: computation.lines,
         notes: form.notes,
-        inclusions: selectedPkg.inclusions ?? [],
-        exclusions: selectedPkg.exclusions ?? [],
+        inclusions: selectedPkg?.inclusions ?? [],
+        exclusions: selectedPkg?.exclusions ?? [],
       });
       toast.success("Your quote PDF is downloading. Our team will follow up within 24 hours.");
     } catch (err) {
