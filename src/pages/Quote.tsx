@@ -551,9 +551,9 @@ const Quote = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider">Live estimate</span>
               </div>
 
-              {selectedPkg ? (
+              {computation.lines.length > 0 ? (
                 <>
-                  <p className="font-serif text-lg leading-snug">{selectedPkg.title}</p>
+                  <p className="font-serif text-lg leading-snug">{selectedPkg?.title ?? "Custom Kenya Trip"}</p>
                   <p className="text-xs text-white/60">Residency: {RESIDENCY_LABELS[residency]}</p>
                   <div className="space-y-2 text-sm border-y border-white/15 py-3 max-h-72 overflow-y-auto">
                     {computation.lines.map((l, i) => (
@@ -569,7 +569,7 @@ const Quote = () => {
                   </div>
                 </>
               ) : (
-                <p className="text-sm text-white/80">Pick a package to see your live estimate.</p>
+                <p className="text-sm text-white/80">Pick a package, add park entries, or build a custom trip to see your live estimate.</p>
               )}
 
               <p className="text-[11px] text-white/60 leading-relaxed">
