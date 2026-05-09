@@ -53,6 +53,21 @@ const schema = z.object({
 
 type ParkSel = { name: string; adults: number; children: number };
 
+type CustomItem = {
+  id: string;
+  kind: "destination" | "transport";
+  label: string;
+  mode: "perPerson" | "flat";
+  adult: number;
+  child: number;
+  flat: number;
+  adults: number;
+  children: number;
+};
+
+let cidSeq = 0;
+const newCid = () => `c${Date.now()}_${++cidSeq}`;
+
 const Quote = () => {
   const [params] = useSearchParams();
   const preselect = params.get("package") ?? "";
