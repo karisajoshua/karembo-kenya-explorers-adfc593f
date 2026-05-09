@@ -391,6 +391,108 @@ const Quote = () => {
               )}
             </div>
 
+            {/* Custom destinations & transport */}
+            {(["destination", "transport"] as const).map((kind) => {
+              const items = customItems.filter((c) => c.kind === kind);
+              const heading = kind === "destination" ? "Custom destinations / activities" : "Custom transport";
+              const helper = kind === "destination"
+                ? "Add any place or activity not listed above. Set your own price."
+                : "Add transport for routes we don't list. Per-person or flat per vehicle.";
+              const addItem = () =>
+                setCustomItems((s) => [
+                  ...s,
+                  { id: newCid(), kind, label: "", mode: kind === "transport" ? "flat" : "perPerson",
+                    adult: 0, child: 0, flat: 0, adults, children },
+                ]);
+              const update = (id: string, patch: Partial<CustomItem>) =>
+                setCustomItems((s) => s.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+              const remove = (id: string) => setCustomItems((s) => s.filter((c) => c.id !== id));
+
+              return (
+                <div key={kind}>
+                  <div className="flex items-center justify-between mb-1">
+                    <Label className="block">{heading}</Label>
+                    <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                      <Plus className="h-4 w-4 mr-1" /> Add
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mb-2">{helper}</p>
+
+                  {items.length > 0 && (
+                    <div className="space-y-2">
+                      {items.map((ci) => {
+                        const sub = ci.mode === "flat"
+                          ? ci.flat
+                          : ci.adult * ci.adults + ci.child * ci.children;
+                        return (
+                          <div key={ci.id} className="rounded-md border border-border p-3 bg-sand/40 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Input
+                                placeholder={kind === "transport" ? "Route (e.g. Nairobi → Naivasha)" : "Place / activity name"}
+                                value={ci.label}
+                                onChange={(e) => update(ci.id, { label: e.target.value })}
+                                maxLength={120}
+                              />
+                              <button type="button" onClick={() => remove(ci.id)} className="text-muted-foreground hover:text-destructive">
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                            <RadioGroup
+                              value={ci.mode}
+                              onValueChange={(v) => update(ci.id, { mode: v as "perPerson" | "flat" })}
+                              className="flex gap-4"
+                            >
+                              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                <RadioGroupItem value="perPerson" /> Per person
+                              </label>
+                              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                <RadioGroupItem value="flat" /> {kind === "transport" ? "Flat (per vehicle)" : "Flat fee"}
+                              </label>
+                            </RadioGroup>
+
+                            {ci.mode === "flat" ? (
+                              <div className="grid grid-cols-2 gap-2 items-end">
+                                <div>
+                                  <Label className="text-xs">Flat amount (USD)</Label>
+                                  <Input type="number" min={0} value={ci.flat}
+                                    onChange={(e) => update(ci.id, { flat: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div className="text-right text-sm font-semibold text-secondary">${sub.toFixed(2)}</div>
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-5 gap-2 items-end">
+                                <div>
+                                  <Label className="text-xs">Adult $</Label>
+                                  <Input type="number" min={0} value={ci.adult}
+                                    onChange={(e) => update(ci.id, { adult: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Adults</Label>
+                                  <Input type="number" min={0} value={ci.adults}
+                                    onChange={(e) => update(ci.id, { adults: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Child $</Label>
+                                  <Input type="number" min={0} value={ci.child}
+                                    onChange={(e) => update(ci.id, { child: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Children</Label>
+                                  <Input type="number" min={0} value={ci.children}
+                                    onChange={(e) => update(ci.id, { children: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div className="text-right text-sm font-semibold text-secondary">${sub.toFixed(2)}</div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
             <div>
               <Label className="mb-2 block">Optional add-ons</Label>
               <div className="space-y-2">
