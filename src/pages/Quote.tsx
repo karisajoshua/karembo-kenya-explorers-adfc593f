@@ -53,6 +53,21 @@ const schema = z.object({
 
 type ParkSel = { name: string; adults: number; children: number };
 
+type CustomItem = {
+  id: string;
+  kind: "destination" | "transport";
+  label: string;
+  mode: "perPerson" | "flat";
+  adult: number;
+  child: number;
+  flat: number;
+  adults: number;
+  children: number;
+};
+
+let cidSeq = 0;
+const newCid = () => `c${Date.now()}_${++cidSeq}`;
+
 const Quote = () => {
   const [params] = useSearchParams();
   const preselect = params.get("package") ?? "";
@@ -67,6 +82,7 @@ const Quote = () => {
   const [travelDate, setTravelDate] = useState<Date | undefined>();
   const [days, setDays] = useState<number | "">("");
   const [addons, setAddons] = useState<Record<string, boolean>>({});
+  const [customItems, setCustomItems] = useState<CustomItem[]>([]);
   const [form, setForm] = useState({ name: "", email: "", phone: "", country: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
 
@@ -146,27 +162,57 @@ const Quote = () => {
         }
       }
     });
-    const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal;
+
+    // Custom destinations + transport
+    let customTotal = 0;
+    customItems.forEach((ci) => {
+      const prefix = ci.kind === "transport" ? "Transport — " : "";
+      const label = `${prefix}${ci.label || (ci.kind === "transport" ? "Custom transport" : "Custom destination")}`;
+      if (ci.mode === "flat") {
+        if (ci.flat > 0) {
+          customTotal += ci.flat;
+          lines.push({ description: `${label} (flat)`, pax: 1, rate: +ci.flat.toFixed(2) });
+        }
+      } else {
+        if (ci.adults > 0 && ci.adult > 0) {
+          customTotal += ci.adult * ci.adults;
+          lines.push({ description: `${label} — Adult`, pax: ci.adults, rate: +ci.adult.toFixed(2) });
+        }
+        if (ci.children > 0 && ci.child > 0) {
+          customTotal += ci.child * ci.children;
+          lines.push({ description: `${label} — Child`, pax: ci.children, rate: +ci.child.toFixed(2) });
+        }
+      }
+    });
+
+    const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal + customTotal;
     return { lines, total, parkFeesTotal };
-  }, [selectedPkg, adults, children, addons, parkSel, residency]);
+  }, [selectedPkg, adults, children, addons, parkSel, residency, customItems]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = schema.safeParse(form);
     if (!parsed.success) { toast.error(parsed.error.errors[0]?.message ?? "Check the form"); return; }
-    if (!selectedPkg) { toast.error("Please choose a package"); return; }
     if (adults < 1) { toast.error("At least 1 adult required"); return; }
+    if (!selectedPkg && customItems.length === 0 && parkSel.length === 0) {
+      toast.error("Pick a package or add at least one custom destination/transport");
+      return;
+    }
 
     setSubmitting(true);
     const travelStr = travelDate ? format(travelDate, "PPP") : undefined;
-    const summary = `Self-quote: USD ${computation.total.toFixed(2)} | ${selectedPkg.title} | ${adults}A+${children}C | Residency: ${RESIDENCY_LABELS[residency]}${parkSel.length ? ` | Parks: ${parkSel.map((p) => `${p.name} (${p.adults}A/${p.children}C)`).join("; ")}` : ""}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
+    const tripTitle = selectedPkg?.title ?? "Custom Kenya Trip";
+    const customSummary = customItems.length
+      ? ` | Custom: ${customItems.map((c) => `${c.kind}:${c.label}(${c.mode === "flat" ? `$${c.flat} flat` : `$${c.adult}A/$${c.child}C × ${c.adults}A/${c.children}C`})`).join("; ")}`
+      : "";
+    const summary = `Self-quote: USD ${computation.total.toFixed(2)} | ${tripTitle} | ${adults}A+${children}C | Residency: ${RESIDENCY_LABELS[residency]}${parkSel.length ? ` | Parks: ${parkSel.map((p) => `${p.name} (${p.adults}A/${p.children}C)`).join("; ")}` : ""}${customSummary}${form.notes ? ` | Notes: ${form.notes}` : ""}`;
 
     await supabase.from("quote_requests").insert([{
       name: form.name, email: form.email,
       phone: form.phone || null, country: form.country || null,
       travel_dates: travelStr ?? null,
       group_size: `${adults} adults${children ? ` + ${children} children` : ""} (${RESIDENCY_LABELS[residency]})`,
-      package_interest: selectedPkg.title,
+      package_interest: tripTitle,
       budget: `USD ${computation.total.toFixed(2)} (estimate)`,
       message: summary,
     }]);
@@ -177,15 +223,15 @@ const Quote = () => {
         email: form.email,
         phone: form.phone,
         country: form.country,
-        packageTitle: selectedPkg.title,
+        packageTitle: tripTitle,
         travelDate: travelStr,
         days: typeof days === "number" ? days : undefined,
         adults, children,
         residency: RESIDENCY_LABELS[residency],
         lines: computation.lines,
         notes: form.notes,
-        inclusions: selectedPkg.inclusions ?? [],
-        exclusions: selectedPkg.exclusions ?? [],
+        inclusions: selectedPkg?.inclusions ?? [],
+        exclusions: selectedPkg?.exclusions ?? [],
       });
       toast.success("Your quote PDF is downloading. Our team will follow up within 24 hours.");
     } catch (err) {
@@ -216,14 +262,14 @@ const Quote = () => {
           <form onSubmit={onSubmit} className="lg:col-span-2 bg-card rounded-xl shadow-card p-6 md:p-8 space-y-6">
             {/* Package */}
             <div>
-              <Label htmlFor="package">Package *</Label>
+              <Label htmlFor="package">Package (optional)</Label>
               <select
                 id="package"
                 value={pkgSlug}
                 onChange={(e) => setPkgSlug(e.target.value)}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <option value="">— Choose a package —</option>
+                <option value="">— Build a custom trip —</option>
                 {packages.map((p) => (
                   <option key={p.slug} value={p.slug}>{p.title} — from ${p.price_from}</option>
                 ))}
@@ -345,6 +391,108 @@ const Quote = () => {
               )}
             </div>
 
+            {/* Custom destinations & transport */}
+            {(["destination", "transport"] as const).map((kind) => {
+              const items = customItems.filter((c) => c.kind === kind);
+              const heading = kind === "destination" ? "Custom destinations / activities" : "Custom transport";
+              const helper = kind === "destination"
+                ? "Add any place or activity not listed above. Set your own price."
+                : "Add transport for routes we don't list. Per-person or flat per vehicle.";
+              const addItem = () =>
+                setCustomItems((s) => [
+                  ...s,
+                  { id: newCid(), kind, label: "", mode: kind === "transport" ? "flat" : "perPerson",
+                    adult: 0, child: 0, flat: 0, adults, children },
+                ]);
+              const update = (id: string, patch: Partial<CustomItem>) =>
+                setCustomItems((s) => s.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+              const remove = (id: string) => setCustomItems((s) => s.filter((c) => c.id !== id));
+
+              return (
+                <div key={kind}>
+                  <div className="flex items-center justify-between mb-1">
+                    <Label className="block">{heading}</Label>
+                    <Button type="button" variant="outline" size="sm" onClick={addItem}>
+                      <Plus className="h-4 w-4 mr-1" /> Add
+                    </Button>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mb-2">{helper}</p>
+
+                  {items.length > 0 && (
+                    <div className="space-y-2">
+                      {items.map((ci) => {
+                        const sub = ci.mode === "flat"
+                          ? ci.flat
+                          : ci.adult * ci.adults + ci.child * ci.children;
+                        return (
+                          <div key={ci.id} className="rounded-md border border-border p-3 bg-sand/40 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Input
+                                placeholder={kind === "transport" ? "Route (e.g. Nairobi → Naivasha)" : "Place / activity name"}
+                                value={ci.label}
+                                onChange={(e) => update(ci.id, { label: e.target.value })}
+                                maxLength={120}
+                              />
+                              <button type="button" onClick={() => remove(ci.id)} className="text-muted-foreground hover:text-destructive">
+                                <X className="h-4 w-4" />
+                              </button>
+                            </div>
+                            <RadioGroup
+                              value={ci.mode}
+                              onValueChange={(v) => update(ci.id, { mode: v as "perPerson" | "flat" })}
+                              className="flex gap-4"
+                            >
+                              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                <RadioGroupItem value="perPerson" /> Per person
+                              </label>
+                              <label className="flex items-center gap-2 text-xs cursor-pointer">
+                                <RadioGroupItem value="flat" /> {kind === "transport" ? "Flat (per vehicle)" : "Flat fee"}
+                              </label>
+                            </RadioGroup>
+
+                            {ci.mode === "flat" ? (
+                              <div className="grid grid-cols-2 gap-2 items-end">
+                                <div>
+                                  <Label className="text-xs">Flat amount (USD)</Label>
+                                  <Input type="number" min={0} value={ci.flat}
+                                    onChange={(e) => update(ci.id, { flat: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div className="text-right text-sm font-semibold text-secondary">${sub.toFixed(2)}</div>
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-5 gap-2 items-end">
+                                <div>
+                                  <Label className="text-xs">Adult $</Label>
+                                  <Input type="number" min={0} value={ci.adult}
+                                    onChange={(e) => update(ci.id, { adult: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Adults</Label>
+                                  <Input type="number" min={0} value={ci.adults}
+                                    onChange={(e) => update(ci.id, { adults: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Child $</Label>
+                                  <Input type="number" min={0} value={ci.child}
+                                    onChange={(e) => update(ci.id, { child: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div>
+                                  <Label className="text-xs">Children</Label>
+                                  <Input type="number" min={0} value={ci.children}
+                                    onChange={(e) => update(ci.id, { children: Math.max(0, Number(e.target.value) || 0) })} />
+                                </div>
+                                <div className="text-right text-sm font-semibold text-secondary">${sub.toFixed(2)}</div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
             <div>
               <Label className="mb-2 block">Optional add-ons</Label>
               <div className="space-y-2">
@@ -403,9 +551,9 @@ const Quote = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider">Live estimate</span>
               </div>
 
-              {selectedPkg ? (
+              {computation.lines.length > 0 ? (
                 <>
-                  <p className="font-serif text-lg leading-snug">{selectedPkg.title}</p>
+                  <p className="font-serif text-lg leading-snug">{selectedPkg?.title ?? "Custom Kenya Trip"}</p>
                   <p className="text-xs text-white/60">Residency: {RESIDENCY_LABELS[residency]}</p>
                   <div className="space-y-2 text-sm border-y border-white/15 py-3 max-h-72 overflow-y-auto">
                     {computation.lines.map((l, i) => (
@@ -421,7 +569,7 @@ const Quote = () => {
                   </div>
                 </>
               ) : (
-                <p className="text-sm text-white/80">Pick a package to see your live estimate.</p>
+                <p className="text-sm text-white/80">Pick a package, add park entries, or build a custom trip to see your live estimate.</p>
               )}
 
               <p className="text-[11px] text-white/60 leading-relaxed">

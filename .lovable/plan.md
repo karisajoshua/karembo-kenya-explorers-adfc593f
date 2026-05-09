@@ -1,73 +1,62 @@
-# Plan
+## 1. Re-generate Sarah Montgomery's Quote PDF (match original branding)
 
-## 1. Replace `src/data/parkFees.ts` with the full KWS rate sheet
+The previous Python-generated quote drifted from the brand used in `Karembo-Invoice-Sarah-Montgomery_v2.pdf` (the version Sarah approved). Regenerate as **`Karembo-Quote-Sarah-Montgomery_v2.pdf`** using a one-off Python (reportlab) script that mirrors the v2 invoice layout exactly:
 
-Rebuild the dataset to cover all parks supplied, with 4 residency categories × adult/child each. New shape:
+- Same header (logo left, right-aligned QUOTE NUMBER / Issued / Valid / website link)
+- Same gold accent rule under the "QUOTE" title
+- Same brown footer block with full contact details
+- Same "PREPARED FOR" / "TRIP" two-column meta
+- Same dark-brown line-items header bar
+- Same green/red side-bar Inclusions / Exclusions cards
+- Document title pill: **"QUOTE"** (not Invoice)
+- Filename starts with **Karembo-Quote-…**
 
-```ts
-export type Residency = "ea_citizen" | "resident" | "non_resident" | "african_citizen";
-export type ParkFee = {
-  name: string;
-  keywords: string[];
-  rates: Record<Residency, { adult: number; child: number }>; // USD
-  note?: string;
-};
-```
+**Content (single line item, no rate column):**
 
-Populate with all 38 parks from the user's table (Amboseli, Lake Nakuru, Nairobi NP, Tsavo East/West, Meru, Kora, Aberdare, Mt Kenya, Hell's Gate, Longonot, Mt Elgon, Ol Donyo Sabuk, Lake Elementaita, Shimba Hills, Kakamega, Mwea, Ruma, Saiwa Swamp, S. Turkana, Sibiloi, Central/South/Ndere Island, Malka Mari, Chyulu, Marsabit, Tana River, Nairobi Animal Orphanage, Nairobi Safari Walk, Kisumu Impala, Kisite Mpunguti, Watamu, Mombasa, Malindi, Kiunga, Diani Chale marine parks).
+| Description | Pax | Amount (USD) |
+|---|---|---|
+| Nairobi National Park, Elephant Orphanage & Giraffe Centre — Day Trip (Transport + Giraffe Centre entry) | 6 | 310.00 |
 
-Update `ParkFeesTable.tsx` to render the four residency columns (USD values, formatted as `$X.XX`).
+**Total: USD 310.00**
 
-## 2. Quote builder (`src/pages/Quote.tsx`) — residency + park fees
+**Inclusions:** Transport, Giraffe Centre entry, English-speaking driver-guide, bottled water
+**Exclusions:** Nairobi National Park entry fee, Elephant Orphanage entry fee, personal expenses, travel insurance, tips
 
-Add to the form, below pax inputs:
+No reference rate block, no extra add-on lines — clean and matching the prior invoice's typography.
 
-- **Residency** radio: EA Citizen · Resident · Non-Resident · African Citizen (default Non-Resident).
-- **Park entries** multi-select chips listing all parks from `parkFees.ts`, each with:
-  - Adults count (defaults to total adults, editable)
-  - Children count (defaults to total children, editable)
-  - Per-park subtotal preview using selected residency rate.
+## 2. Make the Quote page support fully custom trips
 
-Live total panel additions:
-```
-Package base:   price_from × adults + 0.7 × price_from × children
-Park fees:      Σ(park.rate[residency].adult × adultsAtPark + child × childrenAtPark)
-Add-ons:        unchanged
-Total (USD):    sum
-```
+`src/pages/Quote.tsx` currently forces a package selection. Update so users can either pick a package OR build a custom trip from scratch.
 
-Generated client PDF gains a "Park entry fees" line-item block (description = park name + "(EA Citizen / Non-Resident / …)", pax = adults+children, amount = computed). Residency shown in trip meta line.
+**Changes:**
 
-## 3. Regenerate Sarah Montgomery's invoice (no rate column)
+- **Package field becomes optional.** Label changes from "Package *" to "Package (optional)". First option: "— Build a custom trip —". Remove the "Please choose a package" guard in `onSubmit`.
+- **New "Custom destinations / activities" section** below park entries. Lets the user add any place we don't have in the parks list, with manual pricing:
+  - Free-text **Place / activity name**
+  - **Pricing mode** toggle: `Per person` or `Flat fee`
+  - **Adult rate** + **Child rate** (when per-person), or **Flat amount** (when flat)
+  - **Adults** + **Children** counts (default to top-level group size, editable)
+  - Live subtotal, remove (X) button
+- **New "Custom transport" section** (separate block, since user called it out): same shape as custom destinations but pre-labelled "Transport — <route>", with `Per person` or `Flat (per vehicle)` modes. This handles destinations whose transport rate isn't in the standard add-ons.
+- **Totals + line items** include both new sections. Each custom row appears in the generated PDF as its own line item with the entered description.
+- **Submit guard:** require either a package OR at least one custom destination/transport row, plus ≥1 adult.
+- The supabase `quote_requests.message` summary serializes the custom rows so admin sees them.
 
-New file: `/mnt/documents/Karembo-Invoice-Sarah-Montgomery_v2.pdf` via a one-off Python (reportlab) script, brand-matched to existing PDF.
-
-Changes vs v1:
-- Line-items table columns: **Description · Pax · Amount (USD)** — rate column removed.
-- Single line: "Nairobi National Park, Elephant Orphanage & Giraffe Centre — Day Trip (Transport + Giraffe Centre entry)" · Pax 6 · USD 310.00.
-- Total USD 310.00, status UNPAID, today's date.
-- Inclusions / Exclusions blocks unchanged.
-
-Delivered as `<lov-artifact>`.
-
-## 4. Update invoice PDF helper for future reuse
-
-Refactor the line-item rendering in `src/lib/clientQuotePdf.ts` (and the future invoice generator) so the **rate column is optional**: when `showRate=false`, render Description · Pax · Amount only. This keeps quote PDFs detailed but lets invoices hide rates.
+**Technical notes:**
+- New state: `customItems: { id; label; mode: "perPerson"|"flat"; adult: number; child: number; flat: number; adults: number; children: number; kind: "destination"|"transport" }[]`
+- Reuse existing `QuoteLine` type — custom rows convert to one or two lines (adult/child) or single flat line.
+- No DB schema change; no changes to `clientQuotePdf.ts` (line items already render arbitrary descriptions).
 
 ## Files
 
 **New**
-- `/mnt/documents/Karembo-Invoice-Sarah-Montgomery_v2.pdf`
-- `/tmp/gen_invoice_v2.py` (one-off)
+- `/mnt/documents/Karembo-Quote-Sarah-Montgomery_v2.pdf`
+- `/tmp/gen_quote_sarah_v2.py`
 
 **Edited**
-- `src/data/parkFees.ts` — full dataset, new structure
-- `src/components/ParkFeesTable.tsx` — 4-column residency layout
-- `src/pages/Quote.tsx` — residency selector + park-fees picker + totals
-- `src/lib/clientQuotePdf.ts` — optional rate column, park-fee line items
-- `src/components/PackageDetail` consumers if any rely on old `rows` shape
+- `src/pages/Quote.tsx` — optional package, custom destinations + custom transport sections, totals/lines/submit updates
 
 ## Out of scope
-- Storing residency/park-fee selections in DB schema (still serialized into `quote_requests.message`).
-- Admin invoice generator UI.
-- Currency switching.
+- Changing `clientQuotePdf.ts` branding (already correct)
+- Admin-side custom quote editor
+- Persisting custom items in a structured DB column
