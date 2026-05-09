@@ -162,9 +162,32 @@ const Quote = () => {
         }
       }
     });
-    const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal;
+
+    // Custom destinations + transport
+    let customTotal = 0;
+    customItems.forEach((ci) => {
+      const prefix = ci.kind === "transport" ? "Transport — " : "";
+      const label = `${prefix}${ci.label || (ci.kind === "transport" ? "Custom transport" : "Custom destination")}`;
+      if (ci.mode === "flat") {
+        if (ci.flat > 0) {
+          customTotal += ci.flat;
+          lines.push({ description: `${label} (flat)`, pax: 1, rate: +ci.flat.toFixed(2) });
+        }
+      } else {
+        if (ci.adults > 0 && ci.adult > 0) {
+          customTotal += ci.adult * ci.adults;
+          lines.push({ description: `${label} — Adult`, pax: ci.adults, rate: +ci.adult.toFixed(2) });
+        }
+        if (ci.children > 0 && ci.child > 0) {
+          customTotal += ci.child * ci.children;
+          lines.push({ description: `${label} — Child`, pax: ci.children, rate: +ci.child.toFixed(2) });
+        }
+      }
+    });
+
+    const total = adultsTotal + childrenTotal + parkFeesTotal + addonsTotal + customTotal;
     return { lines, total, parkFeesTotal };
-  }, [selectedPkg, adults, children, addons, parkSel, residency]);
+  }, [selectedPkg, adults, children, addons, parkSel, residency, customItems]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
