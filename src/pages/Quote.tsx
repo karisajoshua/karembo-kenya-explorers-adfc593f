@@ -262,14 +262,14 @@ const Quote = () => {
           <form onSubmit={onSubmit} className="lg:col-span-2 bg-card rounded-xl shadow-card p-6 md:p-8 space-y-6">
             {/* Package */}
             <div>
-              <Label htmlFor="package">Package *</Label>
+              <Label htmlFor="package">Package (optional)</Label>
               <select
                 id="package"
                 value={pkgSlug}
                 onChange={(e) => setPkgSlug(e.target.value)}
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <option value="">— Choose a package —</option>
+                <option value="">— Build a custom trip —</option>
                 {packages.map((p) => (
                   <option key={p.slug} value={p.slug}>{p.title} — from ${p.price_from}</option>
                 ))}
