@@ -256,7 +256,24 @@ const PackageDetail = () => {
             <div className="sticky top-28 bg-card rounded-xl shadow-card p-6 border border-border">
               <div className="text-sm text-muted-foreground">Starting from</div>
               <div className="font-serif text-4xl text-primary mb-1">${pkg.price_from}</div>
-              <div className="text-xs text-muted-foreground mb-5">per person sharing</div>
+              <div className="text-xs text-muted-foreground mb-5">
+                {pkg.min_guests
+                  ? `per person sharing · minimum ${pkg.min_guests} guests`
+                  : pkg.price_private
+                    ? "per vehicle · private tour"
+                    : "per person sharing"}
+              </div>
+              {pkg.min_guests && pkg.price_private ? (
+                <div className="mb-5 rounded-lg bg-muted/60 p-3 text-sm space-y-1">
+                  <p className="text-foreground/80">
+                    Shared tour: <span className="font-semibold">${pkg.price_from} per person</span>
+                  </p>
+                  <p className="text-foreground/80">
+                    Private tour: <span className="font-semibold">${pkg.price_private} per vehicle</span>
+                  </p>
+                </div>
+              ) : null}
+
               <div className="flex items-center gap-2 text-sm text-foreground/80 mb-5">
                 <Clock className="h-4 w-4 text-accent" /> {pkg.duration}
               </div>
