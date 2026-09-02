@@ -1,62 +1,48 @@
-## 1. Re-generate Sarah Montgomery's Quote PDF (match original branding)
+# Update Nairobi & Rift Valley tour pricing
 
-The previous Python-generated quote drifted from the brand used in `Karembo-Invoice-Sarah-Montgomery_v2.pdf` (the version Sarah approved). Regenerate as **`Karembo-Quote-Sarah-Montgomery_v2.pdf`** using a one-off Python (reportlab) script that mirrors the v2 invoice layout exactly:
+Replace the currently displayed day-trip prices with the new official rate card, and show both the shared (per person) and private (per vehicle) rates.
 
-- Same header (logo left, right-aligned QUOTE NUMBER / Issued / Valid / website link)
-- Same gold accent rule under the "QUOTE" title
-- Same brown footer block with full contact details
-- Same "PREPARED FOR" / "TRIP" two-column meta
-- Same dark-brown line-items header bar
-- Same green/red side-bar Inclusions / Exclusions cards
-- Document title pill: **"QUOTE"** (not Invoice)
-- Filename starts with **Karembo-Quote-…**
+## New rate card
 
-**Content (single line item, no rate column):**
+Shared tours — per person, minimum 4 guests:
 
-| Description | Pax | Amount (USD) |
-|---|---|---|
-| Nairobi National Park, Elephant Orphanage & Giraffe Centre — Day Trip (Transport + Giraffe Centre entry) | 6 | 310.00 |
+| Tour | Duration | Shared pp |
+| --- | --- | --- |
+| Nairobi National Park Game Drive | 4–5 Hours | USD 40 |
+| Nairobi NP + Giraffe Centre | 5–6 Hours | USD 50 |
+| Lake Naivasha & Hell's Gate | Full Day (8–9 Hours) | USD 80 |
+| Naivasha Boat Ride + Hell's Gate | Full Day (8–9 Hours) | USD 90 |
+| Lake Nakuru National Park Safari | Full Day (10–11 Hours) | USD 90 |
 
-**Total: USD 310.00**
+Private tours — per vehicle:
 
-**Inclusions:** Transport, Giraffe Centre entry, English-speaking driver-guide, bottled water
-**Exclusions:** Nairobi National Park entry fee, Elephant Orphanage entry fee, personal expenses, travel insurance, tips
+| Tour | Duration | Private vehicle |
+| --- | --- | --- |
+| Nairobi National Park | 4–5 Hours | USD 180 |
+| Nairobi NP + Giraffe Centre | 5–6 Hours | USD 220 |
+| Lake Naivasha & Hell's Gate | 8–9 Hours | USD 300 |
+| Naivasha Boat Ride + Hell's Gate | 8–9 Hours | USD 330 |
+| Lake Nakuru National Park | 10–11 Hours | USD 350 |
+| Lake Nakuru + Lake Naivasha | 11–12 Hours | USD 400 |
 
-No reference rate block, no extra add-on lines — clean and matching the prior invoice's typography.
+## What changes
 
-## 2. Make the Quote page support fully custom trips
+1. Existing packages updated with the new price and duration:
+   - `nairobi-national-park` → USD 40 pp / USD 180 private, 4–5 Hours
+   - `nairobi-park-giraffe` → USD 50 pp / USD 220 private, 5–6 Hours
+   - `hells-gate-naivasha-boat` → USD 90 pp / USD 330 private, 8–9 Hours (Naivasha boat ride + Hell's Gate)
+2. New packages added (currently missing from the site):
+   - Lake Naivasha & Hell's Gate — USD 80 pp / USD 300 private, 8–9 Hours
+   - Lake Nakuru National Park Safari — USD 90 pp / USD 350 private, 10–11 Hours
+   - Lake Nakuru + Lake Naivasha — private only USD 400, 11–12 Hours
+   Each gets a summary, highlights, itinerary, inclusions/exclusions and a matching photo from the gallery.
+3. Inclusions standardised on these tours: professional driver-guide, hotel pickup & drop-off within Nairobi, bottled water, Wi-Fi where available, comfortable safari vehicle. Exclusion: park & attraction entrance fees unless stated.
+4. Cards and detail pages show `From USD 40 per person (min 4 guests)` plus a `Private: USD 180 per vehicle` line where a private rate exists. Package cards keep their existing look, just with the extra private-rate line.
+5. Packages without a new rate (Masai Mara, Amboseli, cultural, combos, Bomas, Karen Blixen, coffee farm, Longonot, orphanage combos) are left untouched.
 
-`src/pages/Quote.tsx` currently forces a package selection. Update so users can either pick a package OR build a custom trip from scratch.
+## Technical notes
 
-**Changes:**
-
-- **Package field becomes optional.** Label changes from "Package *" to "Package (optional)". First option: "— Build a custom trip —". Remove the "Please choose a package" guard in `onSubmit`.
-- **New "Custom destinations / activities" section** below park entries. Lets the user add any place we don't have in the parks list, with manual pricing:
-  - Free-text **Place / activity name**
-  - **Pricing mode** toggle: `Per person` or `Flat fee`
-  - **Adult rate** + **Child rate** (when per-person), or **Flat amount** (when flat)
-  - **Adults** + **Children** counts (default to top-level group size, editable)
-  - Live subtotal, remove (X) button
-- **New "Custom transport" section** (separate block, since user called it out): same shape as custom destinations but pre-labelled "Transport — <route>", with `Per person` or `Flat (per vehicle)` modes. This handles destinations whose transport rate isn't in the standard add-ons.
-- **Totals + line items** include both new sections. Each custom row appears in the generated PDF as its own line item with the entered description.
-- **Submit guard:** require either a package OR at least one custom destination/transport row, plus ≥1 adult.
-- The supabase `quote_requests.message` summary serializes the custom rows so admin sees them.
-
-**Technical notes:**
-- New state: `customItems: { id; label; mode: "perPerson"|"flat"; adult: number; child: number; flat: number; adults: number; children: number; kind: "destination"|"transport" }[]`
-- Reuse existing `QuoteLine` type — custom rows convert to one or two lines (adult/child) or single flat line.
-- No DB schema change; no changes to `clientQuotePdf.ts` (line items already render arbitrary descriptions).
-
-## Files
-
-**New**
-- `/mnt/documents/Karembo-Quote-Sarah-Montgomery_v2.pdf`
-- `/tmp/gen_quote_sarah_v2.py`
-
-**Edited**
-- `src/pages/Quote.tsx` — optional package, custom destinations + custom transport sections, totals/lines/submit updates
-
-## Out of scope
-- Changing `clientQuotePdf.ts` branding (already correct)
-- Admin-side custom quote editor
-- Persisting custom items in a structured DB column
+- Migration adds two nullable columns to `packages`: `price_private` (numeric) and `min_guests` (integer, default 4 for shared tours), then updates/inserts the rows above.
+- Regenerate `src/integrations/supabase/types.ts` after the migration.
+- Update `PackageCard`, `PackageDetail`, `MegaMenu` and the admin `PackageEdit` form to read/write the two new fields.
+- Sort order adjusted so the Nairobi tours stay first on the homepage, followed by Naivasha/Hell's Gate then Nakuru.
