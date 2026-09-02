@@ -10,7 +10,7 @@ import { ImageUploader } from "@/components/admin/ImageUploader";
 import { toast } from "sonner";
 
 const empty = {
-  slug: "", title: "", category: "safari", duration: "", price_from: 0,
+  slug: "", title: "", category: "safari", duration: "", price_from: 0, price_private: "", min_guests: "",
   image: "", summary: "", highlights: "", inclusions: "", exclusions: "",
   published: true, sort_order: 0,
 };
@@ -29,7 +29,10 @@ const PackageEdit = () => {
       if (error || !data) { toast.error("Not found"); return; }
       setF({
         slug: data.slug, title: data.title, category: data.category, duration: data.duration,
-        price_from: Number(data.price_from), image: data.image, summary: data.summary,
+        price_from: Number(data.price_from),
+        price_private: data.price_private == null ? "" : String(data.price_private),
+        min_guests: data.min_guests == null ? "" : String(data.min_guests),
+        image: data.image, summary: data.summary,
         highlights: (data.highlights || []).join("\n"),
         inclusions: (data.inclusions || []).join("\n"),
         exclusions: (data.exclusions || []).join("\n"),
@@ -43,7 +46,10 @@ const PackageEdit = () => {
     setBusy(true);
     const payload = {
       slug: f.slug, title: f.title, category: f.category, duration: f.duration,
-      price_from: Number(f.price_from), image: f.image, summary: f.summary,
+      price_from: Number(f.price_from),
+      price_private: f.price_private === "" ? null : Number(f.price_private),
+      min_guests: f.min_guests === "" ? null : Number(f.min_guests),
+      image: f.image, summary: f.summary,
       highlights: f.highlights.split("\n").map((s) => s.trim()).filter(Boolean),
       inclusions: f.inclusions.split("\n").map((s) => s.trim()).filter(Boolean),
       exclusions: f.exclusions.split("\n").map((s) => s.trim()).filter(Boolean),
@@ -89,6 +95,14 @@ const PackageEdit = () => {
           <div>
             <Label>Price from (USD)</Label>
             <Input type="number" min={0} value={f.price_from} onChange={(e) => setF({ ...f, price_from: Number(e.target.value) })} required />
+          </div>
+          <div>
+            <Label>Private price per vehicle (USD, optional)</Label>
+            <Input type="number" min={0} value={f.price_private} onChange={(e) => setF({ ...f, price_private: e.target.value })} />
+          </div>
+          <div>
+            <Label>Minimum guests for shared rate (optional)</Label>
+            <Input type="number" min={0} value={f.min_guests} onChange={(e) => setF({ ...f, min_guests: e.target.value })} />
           </div>
           <div>
             <Label>Sort order</Label>
