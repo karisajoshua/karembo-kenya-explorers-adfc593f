@@ -136,7 +136,9 @@ export type Database = {
           image: string
           inclusions: string[]
           itinerary: Json
+          min_guests: number | null
           price_from: number
+          price_private: number | null
           published: boolean
           slug: string
           sort_order: number
@@ -154,7 +156,9 @@ export type Database = {
           image: string
           inclusions?: string[]
           itinerary?: Json
+          min_guests?: number | null
           price_from: number
+          price_private?: number | null
           published?: boolean
           slug: string
           sort_order?: number
@@ -172,7 +176,9 @@ export type Database = {
           image?: string
           inclusions?: string[]
           itinerary?: Json
+          min_guests?: number | null
           price_from?: number
+          price_private?: number | null
           published?: boolean
           slug?: string
           sort_order?: number

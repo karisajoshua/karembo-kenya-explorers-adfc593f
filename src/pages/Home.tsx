@@ -149,8 +149,12 @@ const Home = () => {
                         <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
                           <h3 className="font-serif text-xl mb-1 leading-tight">{t.title}</h3>
                           <p className="text-xs text-primary-foreground/85">
-                            From <span className="font-semibold text-accent">${t.price_from} pp</span>
+                            From{" "}
+                            <span className="font-semibold text-accent">
+                              ${t.price_from} {t.min_guests ? "pp" : t.price_private ? "/ vehicle" : "pp"}
+                            </span>
                           </p>
+
                         </div>
                       </div>
                       {/* Back */}

@@ -10,7 +10,7 @@ export const usePackagesByCategory = (category: string) => {
     let active = true;
     supabase
       .from("packages")
-      .select("slug,title,image,duration,price_from,summary")
+      .select("slug,title,image,duration,price_from,price_private,min_guests,summary")
       .eq("published", true)
       .eq("category", category)
       .order("sort_order")

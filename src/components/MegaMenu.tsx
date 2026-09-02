@@ -17,6 +17,7 @@ type PkgItem = {
   image: string;
   duration: string;
   price_from: number;
+  min_guests?: number | null;
   category: string;
 };
 
@@ -44,7 +45,7 @@ const MegaPanel = ({ to, items }: { to: string; items: PkgItem[] }) => (
             {t.title}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            {t.duration} · From ${t.price_from}
+            {t.duration} · From ${t.price_from}{t.min_guests ? " pp" : ""}
           </p>
         </Link>
       ))}
@@ -63,7 +64,7 @@ export const MegaMenu = () => {
   useEffect(() => {
     supabase
       .from("packages")
-      .select("slug,title,image,duration,price_from,category")
+      .select("slug,title,image,duration,price_from,min_guests,category")
       .eq("published", true)
       .order("sort_order")
       .then(({ data }) => setPkgs((data as PkgItem[]) ?? []));
