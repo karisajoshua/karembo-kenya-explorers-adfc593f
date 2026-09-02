@@ -8,7 +8,10 @@ export type PackageCardItem = {
   duration: string;
   price_from: number;
   summary: string;
+  price_private?: number | null;
+  min_guests?: number | null;
 };
+
 
 export const PackageCard = ({ tour }: { tour: PackageCardItem }) => (
   <Link
