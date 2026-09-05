@@ -322,8 +322,6 @@ const Home = () => {
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 items-center max-w-5xl mx-auto">
             {[
-              { src: "/partners/kato.png", alt: "KATO — Kenya Association of Tour Operators" },
-              { src: "/partners/magical-kenya.jpg", alt: "Magical Kenya — Kenya Tourism Board" },
               { src: "/partners/tourism-regulatory.png", alt: "Tourism Regulatory Authority of Kenya" },
               { src: "/partners/tripadvisor.png", alt: "TripAdvisor" },
             ].map((p) => (
