@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut, UserPlus, Menu, X, ExternalLink } from "lucide-react";
+import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut, UserPlus, CalendarDays, Menu, X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const items = [
   { to: "/admin", end: true, icon: LayoutDashboard, label: "Dashboard" },
   { to: "/admin/quotes", icon: Mail, label: "Quote Requests" },
+  { to: "/admin/bookings", icon: CalendarDays, label: "Bookings & Payments" },
   { to: "/admin/leads", icon: UserPlus, label: "Leads" },
   { to: "/admin/packages", icon: Package, label: "Packages" },
   { to: "/admin/blog", icon: FileText, label: "Blog Posts" },
