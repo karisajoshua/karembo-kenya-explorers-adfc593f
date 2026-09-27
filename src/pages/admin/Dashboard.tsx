@@ -66,7 +66,7 @@ export default function Dashboard() {
     { to: "/admin/leads", icon: Mail, label: "Enquiries & leads", value: counts.leads, sub: counts.leadsNew + " awaiting follow-up", color: "bg-amber-500" },
     { to: "/admin/packages", icon: Package, label: "Tour packages", value: counts.packages, sub: "Manage published tours", color: "bg-amber-800" },
     { to: "/admin/leads", icon: Users, label: "Customer leads", value: counts.leads, sub: "Recorded enquiries", color: "bg-indigo-600" },
-    { to: "/admin/quotes", icon: Wallet, label: "Revenue (KES)", value: "—", sub: "Payment integration required", color: "bg-emerald-800" },
+    { to: "/admin/quotes", icon: Wallet, label: "Manual payments", value: "—", sub: "Record and verify offline", color: "bg-emerald-800" },
   ];
   const actions = [
     { to: "/admin/packages/new", icon: Package, label: "Add tour package", color: "bg-emerald-800" },
