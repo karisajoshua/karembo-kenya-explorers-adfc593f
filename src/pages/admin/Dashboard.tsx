@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertCircle, ArrowRight, FileText, Images, Mail, Package, RefreshCw, UserPlus } from "lucide-react";
+import { AlertCircle, ArrowRight, FileText, Images, Mail, Package, RefreshCw, UserPlus, CalendarDays, Users, Wallet, Zap, ImageIcon, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Recent = { id: string; name: string; created_at: string; detail?: string | null };
@@ -13,6 +13,7 @@ export default function Dashboard() {
   const [counts, setCounts] = useState<Counts>(initial);
   const [quotes, setQuotes] = useState<Recent[]>([]);
   const [leads, setLeads] = useState<Recent[]>([]);
+  const [banner, setBanner] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -29,6 +30,7 @@ export default function Dashboard() {
       supabase.from("leads").select("id", { count: "exact", head: true }).eq("contacted", false),
       supabase.from("quote_requests").select("id,name,created_at,package_interest").order("created_at", { ascending: false }).limit(5),
       supabase.from("leads").select("id,name,created_at,interested_package").order("created_at", { ascending: false }).limit(5),
+      supabase.from("packages").select("image").eq("published", true).limit(1),
     ]);
     const failed = results.filter((result) => result.error);
     if (failed.length) {
@@ -46,72 +48,60 @@ export default function Dashboard() {
     setLeads((results[8].data ?? []).map((item) => ({
       id: item.id, name: item.name, created_at: item.created_at, detail: item.interested_package,
     })));
+    setBanner(results[9].data?.[0]?.image ?? null);
     setLoading(false);
   }, []);
 
   useEffect(() => { void refresh(); }, [refresh]);
 
   const cards = [
-    { to: "/admin/quotes", icon: Mail, label: "Quote requests", value: counts.quotes, sub: counts.unread + " unread" },
-    { to: "/admin/leads", icon: UserPlus, label: "Customer leads", value: counts.leads, sub: counts.leadsNew + " awaiting follow-up" },
-    { to: "/admin/packages", icon: Package, label: "Tour packages", value: counts.packages, sub: "Manage packages and pricing" },
-    { to: "/admin/blog", icon: FileText, label: "Blog articles", value: counts.posts, sub: "Manage website content" },
-    { to: "/admin/gallery", icon: Images, label: "Gallery photos", value: counts.images, sub: "Manage visual content" },
+    { to: "/admin/quotes", icon: CalendarDays, label: "Quote requests", value: counts.quotes, sub: counts.unread + " unread", color: "bg-emerald-700" },
+    { to: "/admin/leads", icon: Mail, label: "Enquiries & leads", value: counts.leads, sub: counts.leadsNew + " awaiting follow-up", color: "bg-amber-500" },
+    { to: "/admin/packages", icon: Package, label: "Tour packages", value: counts.packages, sub: "Manage published tours", color: "bg-amber-800" },
+    { to: "/admin/leads", icon: Users, label: "Customer leads", value: counts.leads, sub: "Recorded enquiries", color: "bg-indigo-600" },
+    { to: "/admin/quotes", icon: Wallet, label: "Revenue (KES)", value: "—", sub: "Payment integration required", color: "bg-emerald-800" },
   ];
-
+  const actions = [
+    { to: "/admin/packages/new", icon: Package, label: "Add tour package", color: "bg-emerald-800" },
+    { to: "/admin/quotes", icon: CalendarDays, label: "Review enquiries", color: "bg-[#a78036]" },
+    { to: "/admin/leads", icon: Mail, label: "View customer leads", color: "bg-[#ad5532]" },
+    { to: "/admin/gallery", icon: ImageIcon, label: "Upload images", color: "bg-blue-800" },
+    { to: "/admin/blog/new", icon: FileText, label: "Write blog post", color: "bg-violet-800" },
+    { to: "/admin/site-images", icon: Images, label: "Manage banners", color: "bg-pink-700" },
+  ];
   return (
-    <div className="space-y-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-sm uppercase tracking-widest text-accent font-semibold">Operations overview</p>
-          <h1 className="font-serif text-3xl text-primary mt-1">Karembo command centre</h1>
-          <p className="text-muted-foreground mt-2">Manage enquiries, customers, tours and website content in one place.</p>
-        </div>
-        <Button variant="outline" onClick={() => void refresh()} disabled={loading}>
-          <RefreshCw className={"h-4 w-4 mr-2 " + (loading ? "animate-spin" : "")} /> Refresh
-        </Button>
+    <div className="space-y-4 lg:space-y-5 text-slate-900">
+      <header className="flex flex-wrap justify-between items-center gap-3">
+        <div><h1 className="text-2xl lg:text-3xl font-bold tracking-tight">Welcome back, Admin! 👋</h1><p className="text-sm text-slate-600">Manage your tours, enquiries, customers and website all in one place.</p></div>
+        <div className="flex items-center gap-3 text-sm"><span className="hidden sm:inline rounded-xl bg-white px-4 py-2">{new Date().toLocaleString(undefined, { dateStyle: "medium" })}</span><Button variant="outline" aria-label="Refresh dashboard" onClick={() => void refresh()} disabled={loading}><RefreshCw className={loading ? "h-4 w-4 animate-spin" : "h-4 w-4"} /></Button><span aria-label={counts.unread + " unread enquiries"} className="relative rounded-full bg-white p-3"><Bell className="h-4 w-4" />{counts.unread > 0 && <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full px-1">{counts.unread}</span>}</span></div>
       </header>
-      {error && <div role="alert" className="flex gap-2 items-center rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive"><AlertCircle className="h-4 w-4 shrink-0" />{error}</div>}
-      <section aria-label="Business metrics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {cards.map((card) => (
-          <Link key={card.to} to={card.to} className="bg-card rounded-xl p-5 shadow-card border border-border/50 hover:shadow-elegant transition group">
-            <div className="flex items-center justify-between"><card.icon className="h-6 w-6 text-accent" /><ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-accent" /></div>
-            <p className="text-3xl font-semibold text-primary mt-4">{loading ? "…" : card.value}</p>
-            <h2 className="font-semibold mt-1">{card.label}</h2>
-            <p className="text-xs text-muted-foreground mt-1">{card.sub}</p>
-          </Link>
-        ))}
+      <section className="relative rounded-xl overflow-hidden min-h-40 lg:min-h-44 flex items-center bg-gradient-to-r from-[#223b2f] to-[#9a733e] text-white" style={banner ? { backgroundImage: `linear-gradient(90deg, rgba(15,36,29,.92), rgba(15,36,29,.08)), url("${banner.replace(/"/g, "%22")}")`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+        <div className="relative p-6 lg:p-10"><h2 className="font-serif text-3xl lg:text-4xl">Karembo Kenya Explorers</h2><p className="mt-2 text-white/90">Showcasing the best of Kenya to the world</p></div>
       </section>
-      <section className="grid lg:grid-cols-2 gap-5" aria-label="Recent customer activity">
-        {[
-          { title: "Recent quote requests", items: quotes, to: "/admin/quotes", empty: "No quote requests yet." },
-          { title: "Recent leads", items: leads, to: "/admin/leads", empty: "No leads yet." },
-        ].map((section) => (
-          <div key={section.title} className="bg-card rounded-xl border border-border/50 shadow-card overflow-hidden">
-            <div className="flex items-center justify-between p-5 border-b border-border">
-              <h2 className="font-serif text-xl text-primary">{section.title}</h2>
-              <Link to={section.to} className="text-sm font-medium text-accent hover:underline">View all</Link>
-            </div>
-            {loading ? <p className="p-5 text-sm text-muted-foreground">Loading…</p> :
-              section.items.length === 0 ? <p className="p-5 text-sm text-muted-foreground">{section.empty}</p> :
-              <ul className="divide-y divide-border">
-                {section.items.map((item) => <li key={item.id} className="p-4 flex items-center justify-between gap-4">
-                  <div className="min-w-0"><p className="font-medium truncate">{item.name}</p><p className="text-xs text-muted-foreground truncate">{item.detail || "General enquiry"}</p></div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">{formatDate(item.created_at)}</span>
-                </li>)}
-              </ul>}
+      {error && <div role="alert" className="flex gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"><AlertCircle className="h-4 w-4 shrink-0" />{error}</div>}
+      <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3">
+        {cards.map(card => <Link key={card.label} to={card.to} className="rounded-xl bg-white p-4 shadow-sm flex gap-3 items-start hover:shadow-md transition">
+          <span className={`rounded-xl p-3 text-white ${card.color}`}><card.icon className="h-5 w-5" /></span>
+          <span className="min-w-0"><span className="text-sm text-slate-600 block">{card.label}</span><strong className="text-2xl block mt-1">{loading ? "…" : card.value}</strong><span className="text-xs text-emerald-800">{card.sub}</span></span>
+        </Link>)}
+      </section>
+      <section className="grid lg:grid-cols-[1.4fr_1fr] gap-4">
+        <div className="rounded-xl bg-white p-5 shadow-sm">
+          <div className="flex justify-between items-center"><h2 className="font-bold flex gap-2 items-center"><CalendarDays className="h-5 w-5" /> Enquiries overview</h2><span className="text-xs text-slate-500">Current records</span></div>
+          <div className="mt-8 flex flex-col justify-center min-h-48 rounded-lg bg-gradient-to-t from-emerald-50 to-white border border-slate-100 p-6">
+            <div className="flex items-end gap-4"><span className="text-5xl font-bold text-emerald-800">{loading ? "…" : counts.quotes + counts.leads}</span><span className="text-sm text-slate-600 pb-1">total enquiries and leads</span></div>
+            <div className="mt-7 grid grid-cols-2 gap-4 text-sm"><div className="border-l-4 border-emerald-800 pl-3"><p className="text-slate-500">Quote requests</p><strong className="text-xl">{counts.quotes}</strong></div><div className="border-l-4 border-amber-500 pl-3"><p className="text-slate-500">Captured leads</p><strong className="text-xl">{counts.leads}</strong></div></div>
+            <p className="mt-5 text-xs text-slate-500">A time-series chart will be enabled when historical reporting is configured.</p>
           </div>
-        ))}
-      </section>
-      <section className="bg-card border border-border/50 rounded-xl p-5">
-        <h2 className="font-serif text-xl text-primary mb-4">Quick management</h2>
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="outline"><Link to="/admin/packages">Edit tour packages</Link></Button>
-          <Button asChild variant="outline"><Link to="/admin/blog">Publish blog content</Link></Button>
-          <Button asChild variant="outline"><Link to="/admin/gallery">Manage gallery</Link></Button>
-          <Button asChild variant="outline"><Link to="/admin/site-images">Update site images</Link></Button>
-          <Button asChild variant="outline"><Link to="/" target="_blank" rel="noopener noreferrer">View website</Link></Button>
         </div>
+        <div className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold flex items-center gap-2"><Zap className="h-5 w-5" />Quick actions</h2><div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">{actions.map(action => <Link key={action.label} to={action.to} className={`${action.color} min-h-24 rounded-lg text-white flex flex-col justify-center items-center text-center gap-2 p-3 hover:brightness-110 transition`}><action.icon className="h-6 w-6" /><span className="text-xs font-semibold">{action.label}</span></Link>)}</div></div>
+      </section>
+      <section className="grid lg:grid-cols-3 gap-4">
+        {[
+          { title: "Recent enquiries", to: "/admin/quotes", items: quotes, empty: "No quote requests yet." },
+          { title: "Recent customer leads", to: "/admin/leads", items: leads, empty: "No customer leads yet." },
+        ].map(section => <div key={section.title} className="bg-white rounded-xl shadow-sm p-4"><div className="flex justify-between items-center border-b pb-3"><h2 className="font-bold text-sm">{section.title}</h2><Link to={section.to} className="text-xs text-blue-700">View all</Link></div>{section.items.length ? <ul className="divide-y">{section.items.map(item => <li key={item.id} className="flex justify-between gap-2 py-3"><span className="min-w-0"><span className="font-semibold text-sm block truncate">{item.name}</span><span className="text-xs text-slate-500 block truncate">{item.detail || "General enquiry"}</span></span><span className="text-xs text-slate-500 whitespace-nowrap">{formatDate(item.created_at)}</span></li>)}</ul> : <p className="text-sm text-slate-500 py-5">{loading ? "Loading…" : section.empty}</p>}</div>)}
+        <div className="bg-white rounded-xl shadow-sm p-4"><div className="flex justify-between items-center border-b pb-3"><h2 className="font-bold text-sm">Website content</h2><Link to="/admin/site-images" className="text-xs text-blue-700">Manage</Link></div><div className="divide-y text-sm">{[{ to: "/admin/packages", title: "Tour packages", count: counts.packages }, { to: "/admin/blog", title: "Blog articles", count: counts.posts }, { to: "/admin/gallery", title: "Gallery images", count: counts.images }, { to: "/admin/site-images", title: "Hero banners and site images", count: null }].map(item => <Link key={item.to} to={item.to} className="flex justify-between items-center py-4 hover:text-emerald-800"><span>{item.title}</span><span className="text-xs text-slate-500">{item.count ?? "Manage"} <ArrowRight className="inline h-3 w-3" /></span></Link>)}</div></div>
       </section>
     </div>
   );
