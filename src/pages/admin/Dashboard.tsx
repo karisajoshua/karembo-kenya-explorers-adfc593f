@@ -66,11 +66,11 @@ export default function Dashboard() {
     { to: "/admin/leads", icon: Mail, label: "Enquiries & leads", value: counts.leads, sub: counts.leadsNew + " awaiting follow-up", color: "bg-amber-500" },
     { to: "/admin/packages", icon: Package, label: "Tour packages", value: counts.packages, sub: "Manage published tours", color: "bg-amber-800" },
     { to: "/admin/leads", icon: Users, label: "Customer leads", value: counts.leads, sub: "Recorded enquiries", color: "bg-indigo-600" },
-    { to: "/admin/quotes", icon: Wallet, label: "Manual payments", value: "—", sub: "Record and verify offline", color: "bg-emerald-800" },
+    { to: "/admin/bookings", icon: Wallet, label: "Manual payments", value: "—", sub: "Record and verify offline", color: "bg-emerald-800" },
   ];
   const actions = [
     { to: "/admin/packages/new", icon: Package, label: "Add tour package", color: "bg-emerald-800" },
-    { to: "/admin/quotes", icon: CalendarDays, label: "Review enquiries", color: "bg-[#a78036]" },
+    { to: "/admin/bookings", icon: CalendarDays, label: "New booking / payments", color: "bg-[#a78036]" },
     { to: "/admin/leads", icon: Mail, label: "View customer leads", color: "bg-[#ad5532]" },
     { to: "/admin/gallery", icon: ImageIcon, label: "Upload images", color: "bg-blue-800" },
     { to: "/admin/blog/new", icon: FileText, label: "Write blog post", color: "bg-violet-800" },
