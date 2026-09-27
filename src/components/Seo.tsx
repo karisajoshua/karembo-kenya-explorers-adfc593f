@@ -20,8 +20,8 @@ export const Seo = ({ title, description, path = "/", image, type = "website", j
       ? image
       : `${SITE_URL}${image.startsWith("/") ? "" : "/"}${image}`
     : DEFAULT_OG;
-  const fullTitle = title.length > 60 ? title.slice(0, 57) + "…" : title;
-  const desc = description.length > 160 ? description.slice(0, 157) + "…" : description;
+  const fullTitle = title.length > 60 ? title.slice(0, 57).trimEnd() + "…" : title;
+  const desc = description.length > 155 ? description.slice(0, 152).trimEnd() + "…" : description;
 
   const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
