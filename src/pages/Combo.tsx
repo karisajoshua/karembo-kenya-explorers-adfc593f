@@ -10,8 +10,8 @@ const Combo = () => {
   return (
     <>
       <Seo
-        title="Bush & Beach Combo Safaris in Kenya | Karembo Tours"
-        description="Combine Masai Mara wildlife with Nairobi culture and Indian Ocean beaches in one seamless Kenya tour package, from 5 to 9 days."
+        title="Kenya Safari & Beach Holiday Packages | Karembo Tours"
+        description="Combine Masai Mara safaris, Nairobi attractions and Kenya's coast. Explore customizable safari and beach holiday packages with Karembo Tours."
         path="/combo"
         image="/gallery/zebra-portrait.jpg"
       />
