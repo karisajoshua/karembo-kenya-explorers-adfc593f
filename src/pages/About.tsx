@@ -18,9 +18,9 @@ const values = [
 const About = () => (
   <>
     <Seo
-      title="About Karembo Tours and Safaris — Kenyan Safari Specialists"
-      description="Karembo Tours is a trusted Nairobi-based Kenyan tour operator. Local guides, responsible travel and tailor-made safaris across the Masai Mara, Amboseli and beyond."
-      path="/about"
+      title="About Karembo Tours | Kenya Safari Specialists"
+        description="Discover Karembo Tours, a Nairobi-based tour company offering personalized Kenya safaris, wildlife adventures and cultural experiences."
+        path="/about"
       image="/gallery/lion-male.jpg"
       jsonLd={[orgJsonLd, { "@context": "https://schema.org", "@type": "AboutPage", url: "https://karembotours.co.ke/about", name: "About Karembo Tours" }]}
     />

@@ -49,7 +49,7 @@ const BlogPost = () => {
   return (
     <article>
       <Seo
-        title={`${post.title} | Karembo Tours Journal`}
+        title={`${post.title} | Karembo Tours`}
         description={desc}
         path={`/blog/${post.slug}`}
         image={cover}
@@ -61,7 +61,7 @@ const BlogPost = () => {
           image: cover.startsWith("http") ? cover : `https://karembotours.co.ke${cover}`,
           datePublished: post.created_at,
           dateModified: post.created_at,
-          author: { "@type": "Organization", name: post.author || "Karembo Tours" },
+          author: post.author ? { "@type": "Person", name: post.author } : { "@type": "Organization", name: "Karembo Tours" },
           publisher: { "@type": "Organization", name: "Karembo Tours and Safaris", logo: { "@type": "ImageObject", url: "https://karembotours.co.ke/gallery/lion-male.jpg" } },
           mainEntityOfPage: `https://karembotours.co.ke/blog/${post.slug}`,
           description: desc,

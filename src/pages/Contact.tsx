@@ -76,8 +76,8 @@ const Contact = () => {
   return (
     <>
       <Seo
-        title="Contact Karembo Tours — Free Kenya Safari Quote"
-        description="Request a free, tailor-made Kenya safari quote. Karembo Tours' Nairobi-based team replies within 24 hours. WhatsApp, email or phone."
+        title="Contact Karembo Tours | Plan Your Kenya Safari"
+        description="Contact Karembo Tours to plan your Kenya safari, Nairobi day trip or cultural adventure. Request a personalized itinerary and quote."
         path="/contact"
         image="/gallery/elephant-crossing.jpg"
         jsonLd={{

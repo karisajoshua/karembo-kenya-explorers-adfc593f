@@ -19,8 +19,8 @@ const Blog = () => {
   return (
     <>
       <Seo
-        title="Karembo Journal — Kenya Safari Tips & Travel Guides"
-        description="In-depth Kenya travel guides: when to visit the Masai Mara, the Big Five, packing lists, honeymoon ideas, budget tips and conservation."
+        title="Kenya Safari Tips & Travel Guides | Karembo Journal"
+        description="Plan your Kenya trip with Masai Mara travel guides, safari packing tips, wildlife insights and Nairobi travel inspiration from Karembo Tours."
         path="/blog"
         image="/gallery/zebras-flamingos-lake.jpg"
       />

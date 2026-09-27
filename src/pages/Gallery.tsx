@@ -24,8 +24,8 @@ const Gallery = () => {
   return (
     <>
       <Seo
-        title="Kenya Safari Photo Gallery | Karembo Tours"
-        description="Wildlife, landscapes and behind-the-scenes safari photography from Karembo Tours' trips across the Masai Mara, Amboseli and beyond."
+        title="Kenya Safari & Wildlife Photo Gallery | Karembo Tours"
+        description="Explore Kenya safari photographs featuring wildlife, landscapes and memorable moments from Karembo Tours adventures."
         path="/gallery"
         image="/gallery/wildebeest-herd-mara.jpg"
       />

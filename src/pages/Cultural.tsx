@@ -10,8 +10,8 @@ const Cultural = () => {
   return (
     <>
       <Seo
-        title="Maasai & Samburu Cultural Tours in Kenya | Karembo Tours"
-        description="Authentic, community-led cultural experiences in Kenya — Maasai village immersion, Bomas of Kenya and Samburu cultural extensions."
+        title="Kenya Cultural Tours & Experiences | Karembo Tours"
+        description="Discover Maasai village visits, Bomas of Kenya and Samburu cultural experiences. Explore Kenya's communities with Karembo Tours."
         path="/cultural"
         image="/gallery/lioness-resting.jpg"
       />

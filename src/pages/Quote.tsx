@@ -246,8 +246,8 @@ const Quote = () => {
   return (
     <>
       <Seo
-        title="Build Your Kenya Safari Quote — Karembo Tours"
-        description="Get an instant Kenya safari quote. Pick a package, choose dates, group size and park entry fees, then download a branded PDF quote in seconds."
+        title="Build Your Kenya Safari Quote | Karembo Tours"
+        description="Plan a Kenya safari with a personalized quote. Choose your package, travel dates and group size, then download your Karembo Tours quote."
         path="/quote"
       />
       <PageHero

@@ -10,8 +10,8 @@ const Safaris = () => {
   return (
     <>
       <Seo
-        title="Masai Mara Safari Packages from Nairobi | Karembo Tours"
-        description="Multi-day Masai Mara safaris, Big Five tours and Great Migration trips with a trusted Kenyan tour operator. Tailor-made itineraries from 3 to 8 days."
+        title="Masai Mara & Kenya Safari Packages | Karembo Tours"
+        description="Explore Masai Mara safaris, Big Five wildlife tours and Great Migration adventures. Browse customizable Kenya safari packages with Karembo Tours."
         path="/safaris"
         image="/gallery/elephant-tusks.jpg"
         jsonLd={{
