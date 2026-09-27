@@ -10,8 +10,8 @@ const DayTrips = () => {
   return (
     <>
       <Seo
-        title="Nairobi Day Trips & Excursions | Karembo Tours Kenya"
-        description="Half- and full-day Nairobi tours: National Park, Giraffe Centre, Sheldrick Elephant Orphanage, Karen Blixen, Hell's Gate, Lake Naivasha, Fairview Coffee Farm and more."
+        title="Nairobi Day Trips & Excursions | Karembo Tours"
+        description="Discover Nairobi National Park, Giraffe Centre, elephant orphanage and nearby adventures. Explore Nairobi day trips with Karembo Tours."
         path="/day-trips"
         image="/gallery/elephant-closeup-vehicle.jpg"
       />
