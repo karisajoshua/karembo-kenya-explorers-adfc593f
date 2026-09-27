@@ -31,6 +31,8 @@ import BlogEdit from "./pages/admin/BlogEdit";
 import GalleryAdmin from "./pages/admin/Gallery";
 import SiteImages from "./pages/admin/SiteImages";
 import Leads from "./pages/admin/Leads";
+import Bookings from "./pages/admin/Bookings";
+import BookingDetail from "./pages/admin/BookingDetail";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,8 @@ const router = createBrowserRouter([
       { index: true, element: <Dashboard /> },
       { path: "quotes", element: <QuoteRequests /> },
       { path: "leads", element: <Leads /> },
+      { path: "bookings", element: <Bookings /> },
+      { path: "bookings/:id", element: <BookingDetail /> },
       { path: "packages", element: <Packages /> },
       { path: "packages/:id", element: <PackageEdit /> },
       { path: "blog", element: <BlogPosts /> },
