@@ -56,8 +56,8 @@ const Home = () => {
   return (
     <>
       <Seo
-        title="Karembo Tours and Safaris — Trusted Kenyan Safari Company"
-        description="Masai Mara safaris, Big Five tours, Nairobi day trips and authentic cultural experiences with a trusted Kenyan tour operator. Tailor-made itineraries from Nairobi."
+        title="Kenya Safaris & Nairobi Day Trips | Karembo Tours"
+        description="Explore Masai Mara safaris, Big Five adventures, Nairobi day trips and cultural tours. Plan a tailor-made Kenya journey with Karembo Tours."
         path="/"
         image="/gallery/wildebeest-crossing.jpg"
         jsonLd={[
