@@ -21,9 +21,15 @@ const AdminLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-sand lg:flex">\n      <header className="sticky top-0 z-40 flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground lg:hidden">\n        <Link to="/admin" className="font-serif text-lg font-semibold">Karembo Admin</Link>\n        <button type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="admin-navigation" onClick={() => setMenuOpen(!menuOpen)} className="rounded-lg p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">{menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</button>\n      </header>\n      {menuOpen && <button type="button" aria-label="Close navigation" onClick={() => setMenuOpen(false)} className="fixed inset-0 top-[60px] z-40 bg-black/50 lg:hidden" />}
+    <div className="min-h-screen bg-sand lg:flex">
+      <header className="sticky top-0 z-40 flex items-center justify-between bg-primary px-4 py-3 text-primary-foreground lg:hidden">
+        <Link to="/admin" className="font-serif text-lg font-semibold">Karembo Admin</Link>
+        <button type="button" aria-label={menuOpen ? "Close navigation" : "Open navigation"} aria-expanded={menuOpen} aria-controls="admin-navigation" onClick={() => setMenuOpen(!menuOpen)} className="rounded-lg p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">{menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</button>
+      </header>
+      {menuOpen && <button type="button" aria-label="Close navigation" onClick={() => setMenuOpen(false)} className="fixed inset-0 top-[60px] z-40 bg-black/50 lg:hidden" />}
       <aside id="admin-navigation" className={cn("fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-primary text-primary-foreground flex flex-col transition-transform duration-200 lg:sticky lg:top-0 lg:h-screen lg:w-64 lg:shrink-0 lg:translate-x-0", menuOpen ? "translate-x-0" : "-translate-x-full")}>
-        <div className="p-5 border-b border-primary-foreground/15">\n          <button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)} className="float-right rounded p-1 lg:hidden"><X className="h-5 w-5" /></button>
+        <div className="p-5 border-b border-primary-foreground/15">
+          <button type="button" aria-label="Close menu" onClick={() => setMenuOpen(false)} className="float-right rounded p-1 lg:hidden"><X className="h-5 w-5" /></button>
           <Link to="/" className="font-serif text-lg block hover:text-accent transition">Karembo Admin</Link>
           <p className="text-xs text-primary-foreground/60 truncate mt-1">{user?.email}</p>
         </div>
@@ -32,7 +38,8 @@ const AdminLayout = () => {
             <NavLink
               key={it.to}
               to={it.to}
-              end={it.end}\n              onClick={() => setMenuOpen(false)}
+              end={it.end}
+              onClick={() => setMenuOpen(false)}
               className={({ isActive }) =>
                 cn(
                   "flex items-center gap-3 px-3 py-3 rounded-md text-sm font-medium transition",
