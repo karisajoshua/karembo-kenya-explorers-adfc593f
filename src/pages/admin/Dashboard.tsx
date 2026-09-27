@@ -1,3 +1,4 @@
+import { ResponsiveContainer, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +14,7 @@ export default function Dashboard() {
   const [counts, setCounts] = useState<Counts>(initial);
   const [quotes, setQuotes] = useState<Recent[]>([]);
   const [leads, setLeads] = useState<Recent[]>([]);
+  const [trend, setTrend] = useState<{ month: string; quotes: number; leads: number }[]>([]);
   const [banner, setBanner] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -31,6 +33,8 @@ export default function Dashboard() {
       supabase.from("quote_requests").select("id,name,created_at,package_interest").order("created_at", { ascending: false }).limit(5),
       supabase.from("leads").select("id,name,created_at,interested_package").order("created_at", { ascending: false }).limit(5),
       supabase.from("packages").select("image").eq("published", true).limit(1),
+      supabase.from("quote_requests").select("created_at").gte("created_at", new Date(new Date().getFullYear(), new Date().getMonth() - 7, 1).toISOString()),
+      supabase.from("leads").select("created_at").gte("created_at", new Date(new Date().getFullYear(), new Date().getMonth() - 7, 1).toISOString()),
     ]);
     const failed = results.filter((result) => result.error);
     if (failed.length) {
@@ -49,6 +53,9 @@ export default function Dashboard() {
       id: item.id, name: item.name, created_at: item.created_at, detail: item.interested_package,
     })));
     setBanner(results[9].data?.[0]?.image ?? null);
+    const months = Array.from({ length: 8 }, (_, i) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() - 7 + i); return { key: d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0"), month: d.toLocaleDateString(undefined, { month: "short" }), quotes: 0, leads: 0 }; });
+    for (const [index, field] of [[10, "quotes"], [11, "leads"]] as const) { for (const record of results[index].data ?? []) { const key = record.created_at.slice(0, 7); const target = months.find(month => month.key === key); if (target) target[field]++; } }
+    setTrend(months.map(({ month, quotes, leads }) => ({ month, quotes, leads })));
     setLoading(false);
   }, []);
 
@@ -88,10 +95,18 @@ export default function Dashboard() {
       <section className="grid lg:grid-cols-[1.4fr_1fr] gap-4">
         <div className="rounded-xl bg-white p-5 shadow-sm">
           <div className="flex justify-between items-center"><h2 className="font-bold flex gap-2 items-center"><CalendarDays className="h-5 w-5" /> Enquiries overview</h2><span className="text-xs text-slate-500">Current records</span></div>
-          <div className="mt-8 flex flex-col justify-center min-h-48 rounded-lg bg-gradient-to-t from-emerald-50 to-white border border-slate-100 p-6">
-            <div className="flex items-end gap-4"><span className="text-5xl font-bold text-emerald-800">{loading ? "…" : counts.quotes + counts.leads}</span><span className="text-sm text-slate-600 pb-1">total enquiries and leads</span></div>
-            <div className="mt-7 grid grid-cols-2 gap-4 text-sm"><div className="border-l-4 border-emerald-800 pl-3"><p className="text-slate-500">Quote requests</p><strong className="text-xl">{counts.quotes}</strong></div><div className="border-l-4 border-amber-500 pl-3"><p className="text-slate-500">Captured leads</p><strong className="text-xl">{counts.leads}</strong></div></div>
-            <p className="mt-5 text-xs text-slate-500">A time-series chart will be enabled when historical reporting is configured.</p>
+          <div className="mt-6 h-64" role="img" aria-label="Monthly quote requests and leads for the past eight months">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trend} margin={{ top: 5, right: 8, left: -22, bottom: 0 }}>
+                <CartesianGrid stroke="#e9edf1" vertical={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="quotes" name="Quote requests" stroke="#076747" strokeWidth={2} />
+                <Line type="monotone" dataKey="leads" name="Leads" stroke="#d99315" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
         <div className="rounded-xl bg-white p-5 shadow-sm"><h2 className="font-bold flex items-center gap-2"><Zap className="h-5 w-5" />Quick actions</h2><div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">{actions.map(action => <Link key={action.label} to={action.to} className={`${action.color} min-h-24 rounded-lg text-white flex flex-col justify-center items-center text-center gap-2 p-3 hover:brightness-110 transition`}><action.icon className="h-6 w-6" /><span className="text-xs font-semibold">{action.label}</span></Link>)}</div></div>
