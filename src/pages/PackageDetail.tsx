@@ -98,11 +98,11 @@ const PackageDetail = () => {
   return (
     <>
       <Seo
-        title={`${pkg.title} (${pkg.duration}) | Karembo Tours`}
-        description={pkg.summary?.slice(0, 160)}
+        title={`${pkg.title} | Karembo Tours`}
+        description={pkg.summary?.replace(/\s+/g, " ").slice(0, 150) || `Explore ${pkg.title} with Karembo Tours.`}
         path={`/packages/${pkg.slug}`}
         image={pkg.image}
-        type="article"
+        type="website"
         jsonLd={[
           {
             "@context": "https://schema.org",
@@ -110,7 +110,7 @@ const PackageDetail = () => {
             name: pkg.title,
             description: pkg.summary,
             image: pkg.image?.startsWith("http") ? pkg.image : `https://karembotours.co.ke${pkg.image}`,
-            touristType: ["Wildlife", "Adventure", "Cultural"],
+            touristType: pkg.category === "safari" ? "Wildlife" : pkg.category === "cultural" ? "Cultural" : "Leisure",
             offers: { "@type": "Offer", price: pkg.price_from, priceCurrency: "USD" },
             provider: { "@type": "TravelAgency", name: "Karembo Tours and Safaris", url: "https://karembotours.co.ke" },
             itinerary: itinerary.map((d, i) => ({ "@type": "ItemList", position: i + 1, name: d.title, description: d.details })),
