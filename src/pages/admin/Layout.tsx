@@ -1,11 +1,12 @@
 import { NavLink, Outlet, Link } from "react-router-dom";
-import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut, UserPlus } from "lucide-react";
+import { LayoutDashboard, Mail, Package, FileText, ImageIcon, Images, LogOut, UserPlus, CalendarCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 const items = [
   { to: "/admin", end: true, icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/admin/bookings", icon: CalendarCheck, label: "Bookings" },
   { to: "/admin/quotes", icon: Mail, label: "Quote Requests" },
   { to: "/admin/leads", icon: UserPlus, label: "Leads" },
   { to: "/admin/packages", icon: Package, label: "Packages" },

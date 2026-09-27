@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Package, FileText, Images, UserPlus } from "lucide-react";
+import { Mail, Package, FileText, Images, UserPlus, CalendarCheck } from "lucide-react";
 
 const Dashboard = () => {
-  const [counts, setCounts] = useState({ quotes: 0, unread: 0, packages: 0, posts: 0, images: 0, leads: 0, leadsNew: 0 });
+  const [counts, setCounts] = useState({ quotes: 0, unread: 0, packages: 0, posts: 0, images: 0, leads: 0, leadsNew: 0, bookings: 0, outstanding: 0 });
 
   useEffect(() => {
     (async () => {
-      const [q, qu, p, b, g, l, ln] = await Promise.all([
+      const [q, qu, p, b, g, l, ln, bk] = await Promise.all([
         supabase.from("quote_requests").select("id", { count: "exact", head: true }),
         supabase.from("quote_requests").select("id", { count: "exact", head: true }).eq("read", false),
         supabase.from("packages").select("id", { count: "exact", head: true }),
@@ -16,6 +16,7 @@ const Dashboard = () => {
         supabase.from("gallery_images").select("id", { count: "exact", head: true }),
         supabase.from("leads").select("id", { count: "exact", head: true }),
         supabase.from("leads").select("id", { count: "exact", head: true }).eq("contacted", false),
+        supabase.from("bookings").select("balance,status"),
       ]);
       setCounts({
         quotes: q.count ?? 0,
@@ -25,11 +26,14 @@ const Dashboard = () => {
         images: g.count ?? 0,
         leads: l.count ?? 0,
         leadsNew: ln.count ?? 0,
+        bookings: bk.data?.length ?? 0,
+        outstanding: (bk.data ?? []).filter((x) => x.status !== "cancelled").reduce((a, x) => a + Number(x.balance ?? 0), 0),
       });
     })();
   }, []);
 
   const cards = [
+    { to: "/admin/bookings", icon: CalendarCheck, label: "Bookings", value: counts.bookings, sub: `USD ${counts.outstanding.toLocaleString()} outstanding` },
     { to: "/admin/quotes", icon: Mail, label: "Quote Requests", value: counts.quotes, sub: `${counts.unread} unread` },
     { to: "/admin/leads", icon: UserPlus, label: "Leads", value: counts.leads, sub: `${counts.leadsNew} new` },
     { to: "/admin/packages", icon: Package, label: "Packages", value: counts.packages, sub: "Tour packages" },
@@ -41,7 +45,7 @@ const Dashboard = () => {
     <div>
       <h1 className="font-serif text-3xl text-primary mb-2">Dashboard</h1>
       <p className="text-muted-foreground mb-8">Welcome back. Here's what's happening on your site.</p>
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
         {cards.map((c) => (
           <Link key={c.to} to={c.to} className="bg-card rounded-xl p-6 shadow-card hover:shadow-elegant transition group">
             <div className="flex items-center justify-between mb-3">

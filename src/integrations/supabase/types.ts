@@ -53,6 +53,86 @@ export type Database = {
         }
         Relationships: []
       }
+      bookings: {
+        Row: {
+          adults: number
+          amount_paid: number
+          balance: number | null
+          booking_ref: string
+          children: number
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_country: string | null
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string | null
+          end_date: string | null
+          id: string
+          notes: string | null
+          package_id: string | null
+          package_title: string | null
+          status: Database["public"]["Enums"]["booking_status"]
+          total_amount: number
+          travel_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          adults?: number
+          amount_paid?: number
+          balance?: number | null
+          booking_ref?: string
+          children?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_country?: string | null
+          customer_email?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          package_id?: string | null
+          package_title?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_amount?: number
+          travel_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          adults?: number
+          amount_paid?: number
+          balance?: number | null
+          booking_ref?: string
+          children?: number
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_country?: string | null
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          end_date?: string | null
+          id?: string
+          notes?: string | null
+          package_id?: string | null
+          package_title?: string | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          total_amount?: number
+          travel_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "packages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gallery_images: {
         Row: {
           caption: string | null
@@ -188,6 +268,86 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_audit: {
+        Row: {
+          action: string
+          booking_id: string | null
+          changed_at: string
+          changed_by: string | null
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          payment_id: string
+        }
+        Insert: {
+          action: string
+          booking_id?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          payment_id: string
+        }
+        Update: {
+          action?: string
+          booking_id?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          payment_id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          booking_id: string
+          created_at: string
+          currency: string
+          id: string
+          method: Database["public"]["Enums"]["payment_method"]
+          notes: string | null
+          paid_at: string
+          recorded_by: string | null
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method: Database["public"]["Enums"]["payment_method"]
+          notes?: string | null
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          method?: Database["public"]["Enums"]["payment_method"]
+          notes?: string | null
+          paid_at?: string
+          recorded_by?: string | null
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -314,6 +474,20 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "partially_paid"
+        | "paid"
+        | "completed"
+        | "cancelled"
+      payment_method:
+        | "cash"
+        | "mpesa"
+        | "bank_transfer"
+        | "card_manual"
+        | "cheque"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -442,6 +616,22 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "partially_paid",
+        "paid",
+        "completed",
+        "cancelled",
+      ],
+      payment_method: [
+        "cash",
+        "mpesa",
+        "bank_transfer",
+        "card_manual",
+        "cheque",
+        "other",
+      ],
     },
   },
 } as const
