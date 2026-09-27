@@ -39,7 +39,7 @@ export const Header = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
-          <Button asChild variant="outline" className="font-semibold"><Link to="/admin/login"><LogIn className="h-4 w-4 mr-2" />Admin Sign In</Link></Button>
+          <Button asChild variant="outline" className="font-semibold"><Link to="/admin/login"><LogIn className="h-4 w-4 mr-2" />Sign In</Link></Button>
           <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
             <Link to="/quote">Get a Quote</Link>
           </Button>
@@ -72,7 +72,7 @@ export const Header = () => {
                 {n.label}
               </NavLink>
             ))}
-            <Button asChild variant="outline" className="mt-3"><Link to="/admin/login" onClick={() => setOpen(false)}><LogIn className="h-4 w-4 mr-2" />Admin Sign In</Link></Button>
+            <Button asChild variant="outline" className="mt-3"><Link to="/admin/login" onClick={() => setOpen(false)}><LogIn className="h-4 w-4 mr-2" />Sign In</Link></Button>
             <Button asChild className="mt-3 bg-accent text-accent-foreground hover:bg-accent/90">
               <Link to="/quote" onClick={() => setOpen(false)}>Get a Quote</Link>
             </Button>
