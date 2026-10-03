@@ -1,26 +1,34 @@
-# Karembo Kenya Tours
+# Karembo Tours and Safaris
 
-you are a seniorsoftware engineer and i want you to clone this website https://nextstoptanzania.com/. but for this one you will call it Karembo Tours,it only specializes in kenyan tours in Nairobi and the masai mara. am also uploading a pdf for the design.
+Official website for Karembo Tours and Safaris, a Kenya-focused tour operator offering Nairobi day trips, Masai Mara safaris, wildlife experiences, cultural tours, and tailor-made journeys.
 
-This project was built with [Lovable](https://lovable.dev).
+## Website
 
-**Live app**: https://karembo-kenya-explorers.lovable.app
+https://karembotours.co.ke/
 
-## Build with Lovable
+## Technology
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ca7718ca-758e-46f0-bdb0-4e65a98e35e9).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Supabase
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requires Node.js and npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Create a production build with:
+
+```sh
+npm run build
+```
+
+## Project
+
+This repository contains the Karembo Tours website source code and supporting application configuration.
