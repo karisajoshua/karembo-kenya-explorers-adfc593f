@@ -1,345 +1,357 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
-import { Compass, HeartHandshake, Sparkles, Quote, MessageCircle, Phone, Calendar, ArrowRight } from "lucide-react";
-import Autoplay from "embla-carousel-autoplay";
-import { Button } from "@/components/ui/button";
-import { PageHero } from "@/components/PageHero";
-import { SectionHeader } from "@/components/SectionHeader";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+  ArrowRight,
+  Compass,
+  HeartHandshake,
+  MapPinned,
+  PawPrint,
+  Sparkles,
+} from "lucide-react";
+import { PackageCard } from "@/components/PackageCard";
 import { usePackagesByCategory } from "@/hooks/usePackages";
-import { cn } from "@/lib/utils";
-import { Seo, orgJsonLd } from "@/components/Seo";
+import { Seo } from "@/components/Seo";
 
 import HERO from "@/assets/uploads/wildebeest-crossing.jpg";
-import HERO_2 from "@/assets/uploads/elephant-tusks.jpg";
-import HERO_3 from "@/assets/uploads/lion-male.jpg";
-import HERO_4 from "@/assets/uploads/elephant-crossing.jpg";
-import HERO_5 from "@/assets/uploads/safari-binoculars.jpg";
-import CULTURAL_IMG from "@/assets/uploads/safari-binoculars.jpg";
-import BANNER_IMG from "@/assets/uploads/elephant-crossing.jpg";
+import MARA from "@/assets/uploads/elephant-tusks.jpg";
+import WILDLIFE from "@/assets/uploads/lion-male.jpg";
+import LANDSCAPE from "@/assets/uploads/elephant-crossing.jpg";
+import EXPERIENCE from "@/assets/uploads/safari-binoculars.jpg";
 
-const HERO_IMAGES = [HERO, HERO_2, HERO_3, HERO_4, HERO_5];
-
-const pillars = [
-  {
-    icon: Compass,
-    title: "Local Expertise",
-    body: "Born and raised in Kenya. Our guides know the Mara plains and Nairobi backstreets like home.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Flexibility",
-    body: "Every itinerary is built around your pace, your interests, and the rhythm of the wild.",
-  },
-  {
-    icon: Sparkles,
-    title: "Customization",
-    body: "From honeymoon hideaways to family adventures — your safari, exactly the way you want it.",
-  },
-];
-
-const testimonials = [
-  { name: "Sarah & James, UK", text: "Karembo gave us the safari of our dreams. Our guide spotted a leopard on the very first morning — pure magic." },
-  { name: "Maria, Spain", text: "From the Nairobi day tour to four nights in the Mara, every detail was thoughtfully planned. We'll be back." },
-  { name: "Daniel, Germany", text: "Authentic, warm and professional. The Maasai village visit was a highlight I'll never forget." },
-];
+const SITE_URL = "https://karembotours.co.ke";
 
 const Home = () => {
-  const { items: safarisAll } = usePackagesByCategory("safari");
-  const { items: dayTripsAll } = usePackagesByCategory("day-trip");
-  // Featured "Popular Packages" — Nairobi day-trips first, then top safaris
-  const nairobiFeatured = dayTripsAll.filter((d) => /nairobi/i.test(d.title)).slice(0, 4);
-  const safaris = [...nairobiFeatured, ...safarisAll].slice(0, 3);
-  const dayTrips = dayTripsAll.slice(0, 8);
-  const autoplay = useRef(Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true }));
+  const { items: safariPackages } = usePackagesByCategory("safari");
+  const { items: dayTripPackages } = usePackagesByCategory("day-trip");
+
+  const featuredSafaris = safariPackages.slice(0, 3);
+  const featuredDayTrips = dayTripPackages.slice(0, 3);
+
+  const homeSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        url: SITE_URL,
+        name: "Karembo Tours",
+        description:
+          "Locally crafted Kenya safaris, wildlife adventures and tailor-made travel experiences.",
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: "Karembo Tours",
+        url: SITE_URL,
+        logo: `${SITE_URL}/gallery/karembo-logo.png`,
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
+        name: "Karembo Tours | Discover Kenya, Your Way",
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#organization` },
+      },
+    ],
+  };
+
+  const pillars = [
+    {
+      icon: Compass,
+      title: "Journeys with meaning",
+      text: "Thoughtfully planned experiences that make room for the places, people and moments that make Kenya unforgettable.",
+    },
+    {
+      icon: HeartHandshake,
+      title: "Local knowledge",
+      text: "Discover Kenya with a team that understands its landscapes and brings a local perspective to every journey.",
+    },
+    {
+      icon: Sparkles,
+      title: "Made around you",
+      text: "From a short escape to a multi-day adventure, your travel plans and interests help shape the experience.",
+    },
+  ];
 
   return (
     <>
       <Seo
-        title="Kenya Safaris & Nairobi Day Trips | Karembo Tours"
-        description="Explore Masai Mara safaris, Big Five adventures, Nairobi day trips and cultural tours. Plan a tailor-made Kenya journey with Karembo Tours."
+        title="Karembo Tours | Kenya Safaris, Masai Mara & Day Trips"
+        description="Discover Kenya with Karembo Tours. Explore Masai Mara safari packages, Nairobi day trips, wildlife encounters and tailor-made Kenyan travel experiences."
         path="/"
-        image="/gallery/wildebeest-crossing.jpg"
-        jsonLd={[
-          orgJsonLd,
-          {
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            url: "https://karembotours.co.ke",
-            name: "Karembo Tours and Safaris",
-            inLanguage: "en",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: "https://karembotours.co.ke/safaris?q={search_term_string}",
-              "query-input": "required name=search_term_string",
-            },
-          },
-          {
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: [
-              { "@type": "Question", name: "When is the best time to visit the Masai Mara?", acceptedAnswer: { "@type": "Answer", text: "The Great Migration peaks in the Masai Mara from July to October, with dramatic Mara River crossings. January–March offers excellent resident game viewing with fewer crowds and lush landscapes after short rains." } },
-              { "@type": "Question", name: "How much does a Kenyan safari cost?", acceptedAnswer: { "@type": "Answer", text: "Karembo safaris start from around $450 per person for a 3-day Masai Mara classic and scale up to $2,800+ per person for 8-day luxury honeymoon trips. All park fees, 4x4 transport and accommodation are included — no hidden surcharges." } },
-              { "@type": "Question", name: "Do I need a visa to visit Kenya?", acceptedAnswer: { "@type": "Answer", text: "Most international travellers need an electronic Travel Authorization (eTA) before arrival, applied for online at etakenya.go.ke. EAC citizens are exempt. Your passport must be valid for 6+ months." } },
-              { "@type": "Question", name: "Is Kenya safe for tourists?", acceptedAnswer: { "@type": "Answer", text: "Yes. Kenya is a safe and welcoming destination. Karembo uses experienced licensed driver-guides, well-maintained 4x4 vehicles and only partners with vetted accommodations across all parks." } },
-              { "@type": "Question", name: "Can I combine a safari with the Kenyan coast?", acceptedAnswer: { "@type": "Answer", text: "Absolutely. We offer popular bush-and-beach combos pairing the Masai Mara or Amboseli with Diani, Watamu or Lamu — typically 7 to 12 days, with internal flights." } },
-            ],
-          },
-        ]}
+        image={HERO}
+        jsonLd={homeSchema}
       />
-      <PageHero
-        images={HERO_IMAGES}
-        size="tall"
-        eyebrow="Karembo Tour Safaris"
-        title="The heart of tailor-made safaris in Kenya"
-        subtitle="From the wild expanse of the Masai Mara to the cultural soul of Nairobi — we craft journeys that move you."
-      >
-        <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
-          <Link to="/contact">Plan Your Safari</Link>
-        </Button>
-        <Button asChild size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-          <Link to="/safaris">Browse Packages</Link>
-        </Button>
-      </PageHero>
 
-      {/* Pillars */}
-      <section className="py-20 bg-background">
-        <div className="container-edge">
-          <div className="grid gap-12 md:grid-cols-3">
-            {pillars.map((p) => (
-              <div key={p.title} className="flex gap-5">
-                <div className="flex-shrink-0 h-16 w-16 rounded-full bg-secondary/15 flex items-center justify-center">
-                  <p.icon className="h-7 w-7 text-secondary" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-xl uppercase tracking-wider text-primary mb-3 font-semibold">{p.title}</h3>
-                  <p className="text-muted-foreground leading-relaxed">{p.body}</p>
-                </div>
+      <main className="bg-[#f5f1e8] text-[#20291f]">
+        {/* Immersive homepage hero */}
+        <section className="relative isolate min-h-[680px] overflow-hidden bg-[#17251d] text-white md:min-h-[790px]">
+          <img
+            src={HERO}
+            alt="Wildebeest crossing the river during the Great Migration in Kenya"
+            className="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#101b16]/90 via-[#142219]/55 to-[#142219]/10" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#101b16]/75 via-transparent to-black/10" />
+
+          <div className="container-edge flex min-h-[680px] items-end py-20 md:min-h-[790px] md:items-center md:py-24">
+            <div className="max-w-4xl">
+              <p className="mb-7 inline-flex items-center gap-3 text-xs font-bold uppercase tracking-[0.3em] text-[#e6c58a]">
+                <span className="h-px w-10 bg-[#e6c58a]" />
+                Karembo Tours · Kenya, Africa
+              </p>
+
+              <h1 className="max-w-4xl font-serif text-5xl font-medium leading-[1.02] tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-[6.4rem]">
+                Discover Kenya.
+                <span className="mt-2 block italic text-[#e6c58a]">
+                  Feel the wild.
+                </span>
+              </h1>
+
+              <p className="mt-8 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
+                From the sweeping plains of the Masai Mara to the vibrant spirit
+                of Nairobi, experience Kenya through journeys crafted with local
+                insight and a genuine love for the wild.
+              </p>
+
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  to="/safaris"
+                  className="inline-flex min-h-14 items-center justify-center gap-3 bg-[#d6a85f] px-8 text-sm font-bold uppercase tracking-[0.13em] text-[#1c281f] transition hover:bg-[#e7c58d]"
+                >
+                  Explore our safaris <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  to="/quote"
+                  className="inline-flex min-h-14 items-center justify-center border border-white/55 px-8 text-sm font-semibold uppercase tracking-[0.13em] text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Create your journey
+                </Link>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Day trips carousel */}
-      <section className="py-20 bg-sand">
-        <div className="container-edge">
-          <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-12">
-            Unforgettable Day Trips
-          </h2>
-          <Carousel
-            opts={{ align: "start", loop: true, dragFree: true }}
-            plugins={[autoplay.current]}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {dayTrips.map((t) => (
-                <CarouselItem key={t.slug} className="pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/4">
-                  <div className="group relative aspect-[3/4] [perspective:1200px]">
-                    <div className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
-                      {/* Front */}
-                      <div className="absolute inset-0 overflow-hidden rounded-xl [backface-visibility:hidden]">
-                        <img
-                          src={t.image}
-                          alt={t.title}
-                          loading="lazy"
-                          className="absolute inset-0 h-full w-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent" />
-                        <div className="absolute inset-x-0 bottom-0 p-5 text-primary-foreground">
-                          <h3 className="font-serif text-xl mb-1 leading-tight">{t.title}</h3>
-                          <p className="text-xs text-primary-foreground/85">
-                            From{" "}
-                            <span className="font-semibold text-accent">
-                              ${t.price_from} {t.min_guests ? "pp" : t.price_private ? "/ vehicle" : "pp"}
-                            </span>
-                          </p>
-
-                        </div>
-                      </div>
-                      {/* Back */}
-                      <div className="absolute inset-0 rounded-xl bg-secondary text-secondary-foreground p-6 flex flex-col justify-center text-center [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                        <h3 className="font-serif text-xl mb-3 leading-tight">{t.title}</h3>
-                        <p className="text-sm leading-relaxed mb-5 line-clamp-5 opacity-90">
-                          {t.summary}
-                        </p>
-                        <Link
-                          to={`/packages/${t.slug}`}
-                          className="inline-flex items-center justify-center gap-2 mx-auto text-sm font-semibold uppercase tracking-wider border-b-2 border-accent pb-1 hover:text-accent transition-colors"
-                        >
-                          View Details <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="hidden md:flex -left-4" />
-            <CarouselNext className="hidden md:flex -right-4" />
-          </Carousel>
-          <div className="text-center mt-12">
-            <Button asChild variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-              <Link to="/day-trips">Explore More Day Trips</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Popular safaris — mosaic */}
-      <section className="py-20 bg-background">
-        <div className="container-edge">
-          <h2 className="font-serif text-3xl md:text-4xl text-primary text-center uppercase tracking-wide mb-16">
-            Our Popular Safari Packages
-          </h2>
-          {safaris.length >= 3 ? (
-            <div className="grid gap-6 md:grid-cols-2 md:auto-rows-fr">
-              {/* Left column — 2 stacked horizontal cards */}
-              {[safaris[0], safaris[1]].map((t, i) => {
-                const imageRight = i === 0;
-                return (
-                  <div
-                    key={t.slug}
-                    className="group grid grid-cols-1 sm:grid-cols-2 overflow-hidden rounded-xl border border-border bg-background shadow-card"
-                  >
-                    <div className={cn("aspect-[4/3] sm:aspect-auto overflow-hidden", imageRight ? "sm:order-2" : "sm:order-1")}>
-                      <img src={t.image} alt={t.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    </div>
-                    <div className={cn("p-6 flex flex-col justify-center", imageRight ? "sm:order-1" : "sm:order-2")}>
-                      <h3 className="font-serif text-xl text-primary mb-2 leading-tight">{t.title}</h3>
-                      <div className="h-1 w-12 bg-accent mb-3" />
-                      <div className="flex items-center gap-2 text-xs text-secondary font-semibold uppercase tracking-wider mb-3">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>{t.duration}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-3">{t.summary}</p>
-                      <Button asChild variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
-                        <Link to={`/packages/${t.slug}`}>
-                          Discover More <ArrowRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {/* Right column — vertical card spanning both rows */}
-              <div className="group md:row-span-2 md:col-start-2 md:row-start-1 flex flex-col overflow-hidden rounded-xl border border-border bg-background shadow-card">
-                <div className="aspect-[4/3] md:aspect-auto md:h-[55%] overflow-hidden">
-                  <img src={safaris[2].image} alt={safaris[2].title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                </div>
-                <div className="p-8 flex flex-col justify-center flex-1">
-                  <h3 className="font-serif text-2xl md:text-3xl text-primary mb-3 leading-tight">{safaris[2].title}</h3>
-                  <div className="h-1 w-16 bg-accent mb-4" />
-                  <div className="flex items-center gap-2 text-sm text-secondary font-semibold uppercase tracking-wider mb-4">
-                    <Calendar className="h-4 w-4" />
-                    <span>{safaris[2].duration}</span>
-                  </div>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{safaris[2].summary}</p>
-                  <Button asChild variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground self-start">
-                    <Link to={`/packages/${safaris[2].slug}`}>
-                      Discover More <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+              <div className="mt-16 flex flex-wrap gap-x-8 gap-y-4 border-t border-white/20 pt-6 text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
+                <span className="inline-flex items-center gap-2"><PawPrint className="h-4 w-4 text-[#e6c58a]" /> Wildlife experiences</span>
+                <span className="inline-flex items-center gap-2"><MapPinned className="h-4 w-4 text-[#e6c58a]" /> Kenya destinations</span>
+                <span className="inline-flex items-center gap-2"><HeartHandshake className="h-4 w-4 text-[#e6c58a]" /> Local expertise</span>
               </div>
             </div>
-          ) : null}
-          <div className="text-center mt-16">
-            <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
-              <Link to="/safaris">Explore More Packages</Link>
-            </Button>
           </div>
-        </div>
-      </section>
 
-      {/* Cultural */}
-      <section className="py-20">
-        <div className="container-edge grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          <div className="relative aspect-[4/5] rounded-xl overflow-hidden shadow-elegant">
-            <img src={CULTURAL_IMG} alt="Maasai cultural experience" className="h-full w-full object-cover" loading="lazy" />
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent mb-3">Cultural Kenya</p>
-            <h2 className="font-serif text-3xl md:text-5xl text-primary mb-5">Beyond the wildlife — meet the people</h2>
-            <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-              Kenya is more than its animals. Spend a night in a Maasai manyatta, learn beadwork from women elders,
-              dance with warriors at sundown, and discover what makes this land truly home.
+          <div className="absolute bottom-0 right-0 hidden w-[26%] border-l border-t border-white/20 bg-[#1c2a21]/75 px-8 py-7 backdrop-blur-sm lg:block">
+            <p className="font-serif text-3xl italic text-[#e6c58a]">Karibu Kenya</p>
+            <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/65">
+              The adventure is yours
             </p>
-            <Button asChild size="lg" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
-              <Link to="/cultural">Explore Cultural Tours</Link>
-            </Button>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA banner */}
-      <section className="relative py-24 my-12 overflow-hidden">
-        <img src={BANNER_IMG} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-primary/80" />
-        <div className="relative container-edge text-center text-primary-foreground">
-          <h2 className="font-serif text-3xl md:text-5xl mb-4 text-balance">Talk to our safari experts</h2>
-          <p className="max-w-2xl mx-auto text-lg text-primary-foreground/90 mb-8">
-            Tell us your travel dates, your dreams, your budget — we'll handcraft an itinerary just for you.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-semibold">
-              <Link to="/contact"><Phone className="h-4 w-4" /> Request a Quote</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              <a href="https://wa.me/254722736130" target="_blank" rel="noopener noreferrer">
-                <MessageCircle className="h-4 w-4" /> WhatsApp Us
-              </a>
-            </Button>
+        {/* Brand introduction */}
+        <section className="container-edge grid gap-12 py-20 md:grid-cols-[0.9fr_1.1fr] md:items-center md:py-28">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#9b713b]">
+              Welcome to Karembo
+            </p>
+            <h2 className="mt-5 max-w-xl font-serif text-4xl leading-[1.12] tracking-tight text-[#26372a] sm:text-5xl">
+              Not just a destination.
+              <span className="block italic text-[#9b713b]">A feeling that stays.</span>
+            </h2>
           </div>
-        </div>
-      </section>
+          <div className="max-w-2xl md:justify-self-end">
+            <p className="text-base leading-8 text-[#586056]">
+              Kenya has a way of staying with you: the golden light across the
+              savannah, the anticipation of a game drive, the warmth of its
+              people and the wonder of seeing wildlife where it belongs.
+            </p>
+            <p className="mt-4 text-base leading-8 text-[#586056]">
+              At Karembo Tours, we help you experience those moments through
+              safari adventures, Nairobi day trips and journeys shaped around
+              what you want to discover.
+            </p>
+            <Link
+              to="/about"
+              className="mt-7 inline-flex items-center gap-3 border-b border-[#9b713b] pb-2 text-sm font-bold uppercase tracking-[0.12em] text-[#344536] transition hover:gap-5"
+            >
+              Get to know us <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-sand">
-        <div className="container-edge">
-          <SectionHeader eyebrow="Travellers' stories" title="What our guests say" />
-          <div className="grid gap-8 md:grid-cols-3">
-            {testimonials.map((t) => (
-              <div key={t.name} className="bg-background p-8 rounded-xl shadow-card relative">
-                <Quote className="h-10 w-10 text-accent/30 absolute top-6 right-6" />
-                <p className="text-foreground/90 italic leading-relaxed mb-5">"{t.text}"</p>
-                <p className="font-semibold text-primary">— {t.name}</p>
+        {/* Brand pillars */}
+        <section className="bg-[#26372a] py-16 text-white md:py-20">
+          <div className="container-edge">
+            <div className="mb-10 max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#e6c58a]">
+                The Karembo difference
+              </p>
+              <h2 className="mt-4 font-serif text-3xl leading-tight sm:text-4xl">
+                Thoughtful travel. Unforgettable Kenya.
+              </h2>
+            </div>
+            <div className="grid gap-8 md:grid-cols-3">
+              {pillars.map(({ icon: Icon, title, text }, index) => (
+                <article
+                  key={title}
+                  className="border-t border-white/20 pt-7"
+                >
+                  <div className="flex items-center justify-between">
+                    <Icon className="h-7 w-7 text-[#e6c58a]" strokeWidth={1.5} />
+                    <span className="font-serif text-2xl italic text-white/35">0{index + 1}</span>
+                  </div>
+                  <h3 className="mt-7 font-serif text-2xl">{title}</h3>
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-white/65">{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Featured safari packages */}
+        <section className="py-20 md:py-28">
+          <div className="container-edge">
+            <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#9b713b]">
+                  Into the wild
+                </p>
+                <h2 className="mt-4 font-serif text-4xl leading-tight text-[#26372a] sm:text-5xl">
+                  Safari journeys to remember
+                </h2>
+                <p className="mt-4 max-w-xl leading-7 text-[#62675e]">
+                  Discover our Kenya safari experiences and find the journey
+                  that brings you closer to the wild.
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Partners */}
-      <section className="py-16 border-t border-border bg-background">
-        <div className="container-edge">
-          <h2 className="text-center font-serif text-2xl md:text-3xl text-primary mb-3">
-            Proud Members & Partners
-          </h2>
-          <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-10">
-            Karembo Tours and Safaris is a trusted, accredited member of Kenya's leading tourism bodies.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-10 items-center max-w-5xl mx-auto">
-            {[
-              { src: "/partners/tourism-regulatory.png", alt: "Tourism Regulatory Authority of Kenya" },
-              { src: "/partners/tripadvisor.png", alt: "TripAdvisor" },
-            ].map((p) => (
-              <div
-                key={p.src}
-                className="bg-background rounded-lg p-4 flex items-center justify-center h-24 transition-all duration-300 grayscale hover:grayscale-0 hover:shadow-card"
+              <Link
+                to="/safaris"
+                className="inline-flex w-fit items-center gap-3 border-b border-[#9b713b] pb-2 text-sm font-bold uppercase tracking-[0.12em] text-[#344536] transition hover:gap-5"
               >
-                <img
-                  src={p.src}
-                  alt={p.alt}
-                  loading="lazy"
-                  className="max-h-16 w-auto object-contain"
-                />
+                View all safaris <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            {featuredSafaris.length > 0 ? (
+              <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+                {featuredSafaris.map((tour) => (
+                  <PackageCard key={tour.slug} tour={tour} />
+                ))}
               </div>
-            ))}
+            ) : (
+              <div className="border border-[#d3c8b6] bg-white/50 px-6 py-12 text-center">
+                <p className="font-serif text-2xl text-[#26372a]">Safari experiences are being updated.</p>
+                <p className="mt-3 text-sm leading-7 text-[#62675e]">Contact our team and we’ll help you plan your Kenya adventure.</p>
+                <Link to="/quote" className="mt-5 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-[#8d6736]">Plan a safari <ArrowRight className="h-4 w-4" /></Link>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* Day trips feature band */}
+        <section className="grid bg-[#e9e3d7] lg:grid-cols-2">
+          <div className="relative min-h-[420px] overflow-hidden lg:min-h-[620px]">
+            <img src={MARA} alt="Elephants in the Kenyan wilderness" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#101b16]/55 to-transparent" />
+            <div className="absolute bottom-8 left-8 text-white md:bottom-12 md:left-12">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#f0d5a6]">Make every moment count</p>
+              <p className="mt-3 font-serif text-3xl italic md:text-4xl">The beauty is closer than you think.</p>
+            </div>
+          </div>
+          <div className="flex items-center py-16 md:py-20">
+            <div className="container-edge max-w-2xl lg:px-14">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#9b713b]">Short escapes, big memories</p>
+              <h2 className="mt-4 font-serif text-4xl leading-tight text-[#26372a] sm:text-5xl">Discover Nairobi & beyond</h2>
+              <p className="mt-5 leading-8 text-[#62675e]">
+                You don’t need weeks away to experience something extraordinary.
+                Explore day trips and discover the wildlife, landscapes and
+                culture waiting just beyond the city.
+              </p>
+              <Link to="/day-trips" className="mt-8 inline-flex min-h-12 items-center gap-3 bg-[#26372a] px-6 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:bg-[#3b5140]">
+                Explore day trips <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Day trip package collection */}
+        {featuredDayTrips.length > 0 && (
+          <section className="bg-[#e9e3d7] pb-20 md:pb-28"><br /><br /><br />
+            <div className="container-edge">
+              <div className="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+                {featuredDayTrips.map((tour) => (
+                  <PackageCard key={tour.slug} tour={tour} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Cultural / experience feature */}
+        <section className="relative isolate overflow-hidden bg-[#17251d] py-20 text-white md:py-28">
+          <img src={EXPERIENCE} alt="A safari experience in Kenya" className="absolute inset-0 -z-20 h-full w-full object-cover opacity-35" loading="lazy" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#142219] via-[#142219]/90 to-[#142219]/55" />
+          <div className="container-edge grid gap-12 md:grid-cols-[1.1fr_0.9fr] md:items-center">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#e6c58a]">More than a game drive</p>
+              <h2 className="mt-5 max-w-2xl font-serif text-4xl leading-tight sm:text-5xl md:text-6xl">
+                Meet the culture.
+                <span className="block italic text-[#e6c58a]">Feel the connection.</span>
+              </h2>
+            </div>
+            <div>
+              <p className="text-base leading-8 text-white/75">
+                A memorable journey is about more than the places on a map.
+                Discover the traditions, stories and local experiences that
+                make Kenya unique.
+              </p>
+              <Link to="/cultural" className="mt-8 inline-flex min-h-12 items-center gap-3 border border-white/50 px-6 text-sm font-bold uppercase tracking-[0.12em] text-white transition hover:border-[#e6c58a] hover:bg-white/10">
+                Explore cultural experiences <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Secondary visual storytelling strip */}
+        <section className="container-edge grid gap-5 py-20 md:grid-cols-2 md:items-center md:py-24">
+          <div className="grid grid-cols-2 gap-4">
+            <img src={WILDLIFE} alt="Lion in the Kenyan savannah" className="mt-10 aspect-[3/4] w-full object-cover" loading="lazy" />
+            <img src={LANDSCAPE} alt="Elephants crossing the open landscape" className="aspect-[3/4] w-full object-cover" loading="lazy" />
+          </div>
+          <div className="md:pl-10">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#9b713b]">Your story, your pace</p>
+            <h2 className="mt-4 font-serif text-4xl leading-tight text-[#26372a] sm:text-5xl">
+              The moments you’ll talk about for years.
+            </h2>
+            <p className="mt-5 leading-8 text-[#62675e]">
+              Whether it’s your first safari or a return to a place you love,
+              we believe the best journeys leave space for discovery. Tell us
+              what inspires you and let’s start planning.
+            </p>
+            <Link to="/quote" className="mt-8 inline-flex min-h-12 items-center gap-3 bg-[#d6a85f] px-6 text-sm font-bold uppercase tracking-[0.12em] text-[#1c281f] transition hover:bg-[#e7c58d]">
+              Plan your trip <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* Final conversion section */}
+        <section className="relative overflow-hidden bg-[#26372a] py-20 text-white md:py-28">
+          <div className="container-edge relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#e6c58a]">Your Kenya adventure awaits</p>
+              <h2 className="mt-4 font-serif text-4xl leading-tight sm:text-5xl">Let’s make your journey unforgettable.</h2>
+              <p className="mt-5 max-w-xl leading-7 text-white/70">
+                Share your travel ideas with us. We’ll help you turn them into
+                a Kenya experience worth remembering.
+              </p>
+            </div>
+            <Link to="/quote" className="inline-flex min-h-14 shrink-0 items-center justify-center gap-3 bg-[#d6a85f] px-8 text-sm font-bold uppercase tracking-[0.13em] text-[#1c281f] transition hover:bg-[#e7c58d]">
+              Start planning <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-32 h-96 w-96 rounded-full border border-white/10" />
+          <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-20 h-72 w-72 rounded-full border border-white/10" />
+        </section>
+      </main>
     </>
   );
 };
